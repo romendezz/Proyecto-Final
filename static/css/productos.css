@@ -1,0 +1,81 @@
+/* Estilos específicos de Productos */
+
+body {
+  background: #f6efe6; /* Beige café claro */
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+h2,
+h4 {
+  color: #4b2e18; /* Café casi negro */
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+.table-container {
+  background: #a67b5b;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(111, 78, 55, 0.08);
+  border: 1px solid #a67b5b;
+}
+
+.table thead tr {
+  background: #a67b5b; /* Marrón intermedio */
+  color: #a67b5b;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #a67b5b; /* Muy claro, estilo café con leche */
+}
+
+.table tbody tr:nth-child(odd) {
+  background: #a67b5b;
+}
+
+.btn-primary {
+  background: #6f4e37;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #4b2e18;
+}
+
+.btn-warning {
+  background: #deb887;
+  border: none;
+  color: #4b2e18;
+}
+
+.btn-danger {
+  background: #8b4c39;
+  border: none;
+  color: #a67b5b;
+}
+
+.modal-content {
+  background: #a67b5b;
+  border-radius: 15px;
+  border: 2px solid #deb887;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #e4d2c1;
+}
+
+.form-control,
+.form-select {
+  background: #a67b5b;
+  border: 1px solid #deb887;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #deb887;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b7885a;
+  border-radius: 4px;
+}

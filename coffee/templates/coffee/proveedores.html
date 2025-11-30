@@ -1,0 +1,47 @@
+{% extends 'coffee/base.html' %} {% load static %} {% block title %}Proveedores
+- The Rojas Coffee{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/proveedores.css' %}" />
+{% endblock %} {% block content %}
+<h1>Gestión de Proveedores</h1>
+<p class="descripcion">Administra los proveedores de la cafetería.</p>
+
+<!-- Formulario -->
+<div class="card">
+  <h2>Registrar proveedor</h2>
+
+  <label>Nombre del proveedor:</label>
+  <input type="text" id="nombreProv" placeholder="Ej: Distribuidora Caribe" />
+
+  <label>Teléfono:</label>
+  <input type="text" id="telefonoProv" placeholder="Ej: +53 555 12345" />
+
+  <label>Producto que suministra:</label>
+  <input type="text" id="productoProv" placeholder="Ej: Café, Azúcar, Pan" />
+
+  <button id="btnAgregar">Agregar Proveedor</button>
+</div>
+
+<!-- Tabla -->
+<div class="card">
+  <h2>Lista de Proveedores</h2>
+
+  <table id="tablaProveedores">
+    <thead>
+      <tr>
+        <th>Proveedor</th>
+        <th>Teléfono</th>
+        <th>Producto</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td colspan="4">Aún no hay proveedores registrados…</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/proveedores.js' %}"></script>
+{% endblock %}

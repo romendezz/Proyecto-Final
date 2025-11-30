@@ -1,0 +1,56 @@
+{% extends 'coffee/base.html' %} {% load static %} {% block title %}Reportes -
+The Rojas Coffee{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reportes.css' %}" />
+{% endblock %} {% block content %}
+<h1>Reportes del Sistema</h1>
+<p class="descripcion">Genera reportes de ventas, productos y clientes.</p>
+
+<!-- Filtros -->
+<div class="card">
+  <h2>Filtros del Reporte</h2>
+
+  <label>Tipo de Reporte:</label>
+  <select id="tipoReporte">
+    <option value="ventasDia">Ventas por Día</option>
+    <option value="ventasMes">Ventas por Mes</option>
+    <option value="masVendidos">Productos más vendidos</option>
+    <option value="clientes">Clientes registrados</option>
+  </select>
+
+  <label>Fecha Inicio:</label>
+  <input type="date" id="fechaInicio" />
+
+  <label>Fecha Fin:</label>
+  <input type="date" id="fechaFin" />
+
+  <button id="btnGenerar">Generar Reporte</button>
+</div>
+
+<!-- Resultados -->
+<div class="card">
+  <h2>Resultado</h2>
+
+  <table id="tablaReporte">
+    <thead>
+      <tr>
+        <th>Dato 1</th>
+        <th>Dato 2</th>
+        <th>Dato 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="3">Genera un reporte para ver datos…</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="acciones">
+    <button>📄 Descargar PDF</button>
+    <button>📊 Descargar Excel</button>
+    <button>🖨️ Imprimir</button>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/reportes.js' %}"></script>
+{% endblock %}

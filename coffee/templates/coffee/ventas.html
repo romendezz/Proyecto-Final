@@ -1,0 +1,100 @@
+{% extends 'coffee/base.html' %} 
+{% load static %} {% block title %}Ventas - The
+Rojas Coffee{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ventas.css' %}" />
+{% endblock %} {% block content %}
+<h2 class="mb-4">Registrar Venta</h2>
+
+<!-- BUSCADOR DE PRODUCTOS -->
+<div class="card-custom mb-4">
+  <h5 class="mb-3">Buscar producto</h5>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <input
+        type="text"
+        id="buscarProducto"
+        class="form-control"
+        placeholder="Ingrese nombre o código"
+      />
+    </div>
+
+    <div class="col-md-3">
+      <button class="btn btn-primary w-100">
+        <i class="bi bi-search"></i> Buscar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LISTA DE PRODUCTOS SELECCIONADOS -->
+<div class="card-custom mb-4">
+  <h5 class="mb-3">Productos en la venta</h5>
+
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Cant.</th>
+        <th>Subtotal</th>
+        <th>Opciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>Café Expresso</td>
+        <td>$1.00</td>
+        <td>
+          <input
+            type="number"
+            class="form-control text-center"
+            value="1"
+            min="1"
+          />
+        </td>
+        <td>$1.00</td>
+        <td>
+          <button class="btn btn-danger btn-sm">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Pan con Jamón</td>
+        <td>$0.80</td>
+        <td>
+          <input
+            type="number"
+            class="form-control text-center"
+            value="2"
+            min="1"
+          />
+        </td>
+        <td>$1.60</td>
+        <td>
+          <button class="btn btn-danger btn-sm">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TOTAL Y CONFIRMAR -->
+<div class="card-custom">
+  <div class="row align-items-center">
+    <div class="col-md-8">
+      <h4>Total: <strong>$2.60</strong></h4>
+    </div>
+
+    <div class="col-md-4">
+      <button class="btn btn-success w-100">
+        <i class="bi bi-check-circle"></i> Confirmar Venta
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}

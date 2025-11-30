@@ -1,0 +1,77 @@
+/* Estilos específicos de Reportes */
+
+body {
+  font-family: "Georgia", Arial, sans-serif;
+  background: #f6efe6;
+}
+
+h1 {
+  text-align: center;
+}
+
+.descripcion {
+  text-align: center;
+  color: #555;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ccc;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}
+
+button {
+  background: #4b2e18;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin-top: 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background: #4b2e18;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+.acciones button {
+  margin-right: 10px;
+  background: #444;
+}
+
+.acciones button:hover {
+  background: black;
+}

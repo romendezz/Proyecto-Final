@@ -1,0 +1,41 @@
+{% extends 'coffee/base.html' %}
+{% load static %}
+
+{% block title %}Productos - The Rojas Coffee{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-3">Productos</h2>
+
+<!-- Barra búsqueda + filtros -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <input type="text" id="busqueda" class="form-control" placeholder="Buscar producto...">
+
+    </div>
+    <div class="col-md-8 d-flex justify-content-end align-items-start">
+        <!-- Botón agregar -->
+        <button class="btn btn-primary mb-3 ms-2" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+            <i class="bi bi-plus-circle"></i> Agregar Producto
+        </button>
+    </div>
+</div>
+
+<!-- CONTENEDOR DE LA TABLA -->
+<div id="contenedorTabla" class="table-container">
+    {% include 'coffee/tabla_productos.html' %}
+</div>
+
+<!-- MODALES (agregar / editar / eliminar) -->
+{% include 'coffee/modales_productos.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/productos.js' %}"></script>
+{% endblock %}
+
