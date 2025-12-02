@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_bootstrap5',
     'coffee',
 ]
 
@@ -120,6 +121,17 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+# Static root for `collectstatic` (useful in production)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Bootstrap configuration (project-wide reference). Templates currently load Bootstrap from CDN
+# If you later want to centralize CDN versions, update these values and optionally add a context
+# processor to expose them to templates.
+BOOTSTRAP = {
+    'CSS_CDN': 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
+    'JS_CDN': 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js',
+    'ICONS_CDN': 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css'
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
