@@ -80,13 +80,20 @@ body {
 
 @media (max-width: 576px) {
   .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
   }
 
   .main-content {
     margin-left: 0;
     padding: 15px;
+  }
+
+  .hamburger-btn {
+    display: block;
   }
 }

@@ -13,6 +13,10 @@ body {
   box-shadow: 0 0 15px rgba(111, 78, 55, 0.1);
   border: 1px solid #e4d2c1;
   transition: box-shadow 0.15s;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
 }
 
 .metric-card h6 {

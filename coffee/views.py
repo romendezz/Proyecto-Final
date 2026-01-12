@@ -5,6 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Producto
 import json
 
+def index (request):
+    return render(request, 'coffee/login.html')
+
 def login(request):
     return render(request, 'coffee/login.html')
 
