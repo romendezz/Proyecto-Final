@@ -1,5 +1,5 @@
 from . import views
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
     path('', views.login_view, name='home'),
@@ -16,15 +16,17 @@ urlpatterns = [
     path('ventas/crear/', views.crear_venta, name='crear_venta'),
     path('ventas/listar/', views.listar_ventas_json, name='listar_ventas'),
     path('ventas/detalle/<int:id>/', views.obtener_venta, name='detalle_venta'),
+    path('ventas/editar/<int:id>/', views.editar_venta, name='editar_venta'),
+    path('ventas/eliminar/<int:id>/', views.eliminar_venta, name='eliminar_venta'),
     path('proveedores/', views.proveedores, name='proveedores'),
     path('proveedores/listar/', views.listar_proveedores_json, name='listar_proveedores'),
     path('proveedores/crear/', views.crear_proveedor, name='crear_proveedor'),
     path('proveedores/editar/<int:id>/', views.editar_proveedor, name='editar_proveedor'),
     path('proveedores/eliminar/<int:id>/', views.eliminar_proveedor, name='eliminar_proveedor'),
-    path('reportes/', views.reportes, name='reportes'),
-    path('reportes/estadisticas/', views.estadisticas_ventas, name='estadisticas'),
-    path('reportes/inventario/', views.reporte_inventario, name='reporte_inventario'),
-    path('reportes/ganancias/', views.reporte_ganancias, name='reporte_ganancias'),
+    
+    # Reportes ahora en su propia app
+    path('reportes/', include('reportes.urls')),
+    
     # Configuración
     path("config/", views.configuracion_page, name="configuracion"),
 

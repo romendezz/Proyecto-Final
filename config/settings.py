@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'coffee',
+    'reportes',
 ]
 
 AUTH_USER_MODEL = 'coffee.Usuario'
@@ -106,13 +107,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -122,8 +123,21 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
 # Static root for `collectstatic` (useful in production)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Debug static files
+if DEBUG:
+    import os
+    STATICFILES_DIRS.insert(0, os.path.join(BASE_DIR, 'static'))
+    print(f"STATIC_URL: {STATIC_URL}")
+    print(f"STATICFILES_DIRS: {STATICFILES_DIRS}")
+    print(f"BASE_DIR: {BASE_DIR}")
 
 # Bootstrap configuration (project-wide reference). Templates currently load Bootstrap from CDN
 # If you later want to centralize CDN versions, update these values and optionally add a context

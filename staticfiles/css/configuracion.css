@@ -1,0 +1,57 @@
+/* Fade-in */
+.fade-in { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
+
+/* Tarjetas estilo café */
+.card-config {
+  background: #fff8ee;
+  border-left: 4px solid #c79b63;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card-config h4 { color: #4b2e18; font-weight: 600; }
+
+/* Tabs activos */
+.nav-tabs .nav-link.active {
+  background: #c79b63 !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Botones y badges */
+.btn-config { border-radius: 6px; padding: 6px 12px; }
+.badge { font-size: 0.85rem; }
+
+/* MODALES */
+.modal-content {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* TOASTS */
+#toastConfig {
+  min-width: 220px;
+  max-width: 300px;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1055;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.toast-body {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Iconos por tipo */
+.toast.bg-success .toast-body { color: #fff; background-color: #28a745; }
+.toast.bg-danger .toast-body { color: #fff; background-color: #dc3545; }
+.toast.bg-warning .toast-body { color: #212529; background-color: #ffc107; }
+.toast.bg-info .toast-body { color: #fff; background-color: #17a2b8; }

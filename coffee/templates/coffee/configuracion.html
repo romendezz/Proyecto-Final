@@ -110,5 +110,35 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+  // Determinar qué sección cargar basado en el hash de la URL
+  function getSeccionFromHash() {
+    const hash = window.location.hash.substring(1);
+    return hash || 'usuarios';
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const seccion = getSeccionFromHash();
+    
+    // Activar el tab correspondiente
+    document.querySelectorAll("#tabsConfig .nav-link").forEach(tab => {
+      tab.classList.remove("active");
+      if (tab.dataset.tab === seccion) {
+        tab.classList.add("active");
+      }
+    });
+    
+    // Cargar la sección correspondiente
+    if (seccion === 'roles') {
+      cargarRoles();
+    } else if (seccion === 'auditoria') {
+      cargarAuditoria();
+    } else if (seccion === 'sesiones') {
+      cargarSesiones();
+    } else {
+      cargarUsuarios();
+    }
+  });
+</script>
 <script src="{% static 'js/configuracion.js' %}"></script>
 {% endblock %}

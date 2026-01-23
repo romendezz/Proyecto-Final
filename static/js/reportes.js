@@ -1,10 +1,16 @@
 // Reportes - Gráficos y estadísticas
 
-let graficoVentasMes = null;
-let graficoProductosTop = null;
+var graficoVentasMes = null;
+var graficoProductosTop = null;
 
 function cargarReporteVentas() {
-  fetch('/reportes/estadisticas/')
+  fetch('/reportes/api/estadisticas/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    }
+  })
     .then((res) => res.json())
     .then((datos) => {
       if (datos.ok) {
@@ -21,7 +27,13 @@ function cargarReporteVentas() {
 }
 
 function cargarReporteInventario() {
-  fetch('/reportes/inventario/')
+  fetch('/reportes/api/inventario/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    }
+  })
     .then((res) => res.json())
     .then((datos) => {
       if (datos.ok) {
@@ -36,7 +48,13 @@ function cargarReporteInventario() {
 }
 
 function cargarReporteGanancias() {
-  fetch('/reportes/ganancias/')
+  fetch('/reportes/api/ganancias/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    }
+  })
     .then((res) => res.json())
     .then((datos) => {
       if (datos.ok) {
@@ -77,7 +95,7 @@ function actualizarResumenVentas(datos) {
             <i class="bi bi-box-seam"></i>
           </div>
           <h6>Productos</h6>
-          <h3 id="totalProductos">0</h3>
+          <h3>${datos.total_productos}</h3>
         </div>
       </div>
       <div class="col-md-3">
@@ -115,13 +133,6 @@ function actualizarResumenVentas(datos) {
     </div>
   `;
   document.getElementById('contenedorReporte').innerHTML = html;
-  
-  // Contar total de productos
-  fetch('/productos/buscar/?q=')
-    .then((res) => res.json())
-    .then((productos) => {
-      document.getElementById('totalProductos').textContent = productos.length;
-    });
 }
 
 function mostrarInventario(datos) {
@@ -216,6 +227,8 @@ function mostrarInventario(datos) {
 }
 
 function mostrarGanancias(datos) {
+  console.log('Datos recibidos en mostrarGanancias:', datos);
+  
   const html = `
     <div class="row mb-4">
       <div class="col-md-3">
@@ -287,20 +300,36 @@ function mostrarGanancias(datos) {
   
   // Crear gráfico de ganancias por mes
   setTimeout(() => {
-    crearGraficoGananciasMes(datos.ganancias_mes);
+    console.log('Intentando crear gráfico de ganancias con datos:', datos.ganancias_mensuales);
+    crearGraficoGananciasMes(datos.ganancias_mensuales);
   }, 100);
 }
 
 function crearGraficos(datos) {
+  console.log('Datos recibidos en crearGraficos:', datos);
+  
   setTimeout(() => {
+    console.log('Creando gráfico de ventas con datos:', datos.ventas_mes);
     crearGraficoVentasMes(datos.ventas_mes);
+    
+    console.log('Creando gráfico de productos top con datos:', datos.productos_top);
     crearGraficoProductosTop(datos.productos_top);
   }, 100);
 }
 
 function crearGraficoVentasMes(ventasMes) {
+  console.log('Datos para gráfico de ventas por mes:', ventasMes);
+  
   const ctx = document.getElementById('graficoVentasMes');
-  if (!ctx) return;
+  if (!ctx) {
+    console.error('No se encontró el elemento canvas con id "graficoVentasMes"');
+    return;
+  }
+
+  if (!ventasMes || Object.keys(ventasMes).length === 0) {
+    console.error('No hay datos para el gráfico de ventas por mes');
+    return;
+  }
 
   if (graficoVentasMes) {
     graficoVentasMes.destroy();
@@ -308,6 +337,9 @@ function crearGraficoVentasMes(ventasMes) {
 
   const labels = Object.keys(ventasMes).reverse();
   const data = Object.values(ventasMes).reverse();
+
+  console.log('Labels ventas:', labels);
+  console.log('Data ventas:', data);
 
   graficoVentasMes = new Chart(ctx, {
     type: 'bar',
@@ -347,38 +379,63 @@ function crearGraficoVentasMes(ventasMes) {
         },
       },
     },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { color: '#4b2e18' },
+        grid: { color: 'rgba(0, 0, 0, 0.1)' },
+      },
+      x: {
+        ticks: { color: '#4b2e18' },
+        grid: { display: false },
+      },
+    },
   });
 }
 
 function crearGraficoProductosTop(productosTop) {
+  console.log('Datos para gráfico de productos top:', productosTop);
+  
   const ctx = document.getElementById('graficoProductosTop');
-  if (!ctx) return;
+  if (!ctx) {
+    console.error('No se encontró el elemento canvas con id "graficoProductosTop"');
+    return;
+  }
+
+  if (!productosTop || productosTop.length === 0) {
+    console.error('No hay datos para el gráfico de productos top');
+    return;
+  }
 
   if (graficoProductosTop) {
     graficoProductosTop.destroy();
   }
 
-  const colores = [
-    '#d4a574',
-    '#a67b5b',
-    '#6b4423',
-    '#4b2e18',
-    '#8b6f47',
-    '#c99b7d',
-    '#e8d5bb',
-    '#b8956a',
-    '#7a5c43',
-    '#9d7e6f',
-  ];
+  const labels = productosTop.map(p => p.producto__nombre || p.producto);
+  const data = productosTop.map(p => p.total || p.cantidad);
+
+  console.log('Labels productos top:', labels);
+  console.log('Data productos top:', data);
 
   graficoProductosTop = new Chart(ctx, {
-    type: 'doughnut',
+    type: 'pie',
     data: {
-      labels: productosTop.map((p) => p.nombre),
+      labels: labels,
       datasets: [
         {
-          data: productosTop.map((p) => p.cantidad),
-          backgroundColor: colores.slice(0, productosTop.length),
+          data: data,
+          backgroundColor: [
+            '#d4a574',
+            '#6b4423',
+            '#8b6f47',
+            '#a67b5b',
+            '#c99b7d',
+            '#4b2e18',
+            '#8b5a3c',
+            '#dc3545',
+            '#28a745',
+            '#ffc107'
+          ],
           borderColor: '#fff8ee',
           borderWidth: 2,
         },
@@ -410,10 +467,23 @@ function crearGraficoProductosTop(productosTop) {
 
 function crearGraficoGananciasMes(gananciasMes) {
   const ctx = document.getElementById('graficoGananciasMes');
-  if (!ctx) return;
+  if (!ctx) {
+    console.error('No se encontró el elemento canvas con id "graficoGananciasMes"');
+    return;
+  }
+
+  console.log('Datos para gráfico de ganancias:', gananciasMes);
+
+  if (!gananciasMes || Object.keys(gananciasMes).length === 0) {
+    console.error('No hay datos para el gráfico de ganancias');
+    return;
+  }
 
   const labels = Object.keys(gananciasMes).reverse();
   const data = labels.map(l => parseFloat(gananciasMes[l])).reverse();
+
+  console.log('Labels:', labels);
+  console.log('Data:', data);
 
   new Chart(ctx, {
     type: 'line',
@@ -488,4 +558,19 @@ function cargarUltimasVentas() {
     .catch((err) => {
       console.error('Error:', err);
     });
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
 }

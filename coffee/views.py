@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404 , HttpResponse, redirect
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from .models import Producto, Proveedor, Venta, DetalleVenta
 from django.utils import timezone
 import json
@@ -58,13 +60,14 @@ def inicio(request):
     }
     return render(request, 'coffee/inicio.html', context)
 
+@login_required
 def productos(request):
     ver = request.GET.get('ver', 'todos')
     
     if ver == 'bajo-stock':
-        productos_list = Producto.objects.filter(stock__lt=5, stock__gt=0).order_by('stock')
+        productos_list = Producto.objects.select_related('proveedor').filter(stock__lt=5, stock__gt=0).order_by('stock')
     else:
-        productos_list = Producto.objects.all()
+        productos_list = Producto.objects.select_related('proveedor').all()
     
     proveedores = Proveedor.objects.all()
     context = {
@@ -102,7 +105,7 @@ def buscar_productos(request):
     return JsonResponse(datos, safe=False)
 
 
-@csrf_exempt
+@require_POST
 def crear_producto(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -144,7 +147,7 @@ def crear_producto(request):
     return JsonResponse({"ok": False})
 
 
-@csrf_exempt
+@require_POST
 def editar_producto(request, id):
     if request.method == 'POST':
         p = get_object_or_404(Producto, id=id)
@@ -187,37 +190,27 @@ def editar_producto(request, id):
     return JsonResponse({"ok": False})
 
 
-@csrf_exempt
+@require_POST
 def eliminar_producto(request, id):
     p = get_object_or_404(Producto, id=id)
     p.delete()
     return JsonResponse({"ok": True})
 
 
+@login_required
 def ventas(request):
-    from datetime import timedelta
-    
+    """Vista principal de ventas con acceso directo a historial diario o mensual"""
     filtro = request.GET.get('filtro', '')
-    ventas_list = Venta.objects.all().order_by('-fecha')
-    
-    # Filtrar por período
-    if filtro == 'hoy':
-        hoy = timezone.now().date()
-        ventas_list = ventas_list.filter(fecha__date=hoy)
-    elif filtro == 'mes':
-        hoy = timezone.now().date()
-        primer_dia_mes = hoy.replace(day=1)
-        ventas_list = ventas_list.filter(fecha__date__gte=primer_dia_mes)
     
     context = {
-        'ventas': ventas_list,
         'productos': Producto.objects.all(),
-        'filtro_activo': filtro,
+        'filtro_activo': filtro  # 'hoy', 'mes', o None
     }
+    
     return render(request, 'coffee/ventas.html', context)
 
 
-@csrf_exempt
+@require_POST
 def crear_venta(request):
     """Crear una nueva venta con detalles"""
     if request.method == 'POST':
@@ -249,7 +242,7 @@ def crear_venta(request):
             
             # Crear venta
             venta = Venta.objects.create(
-                usuario_id=1  # Por ahora usuario por defecto
+                usuario=request.user if request.user.is_authenticated else None
             )
             
             total = Decimal('0')
@@ -292,10 +285,28 @@ def crear_venta(request):
     return JsonResponse({"ok": False})
 
 
-@csrf_exempt
 def listar_ventas_json(request):
-    """Retorna todas las ventas en JSON"""
+    """Retorna todas las ventas en JSON con filtros opcionales de día, mes y año"""
     ventas_list = Venta.objects.all().order_by('-fecha')
+    
+    # Aplicar filtros
+    dia = request.GET.get('dia')
+    mes = request.GET.get('mes')
+    año = request.GET.get('año')
+    
+    if dia:
+        # Formato esperado: YYYY-MM-DD
+        try:
+            fecha_obj = datetime.strptime(dia, '%Y-%m-%d').date()
+            ventas_list = ventas_list.filter(fecha__date=fecha_obj)
+        except ValueError:
+            pass
+    
+    if mes:
+        ventas_list = ventas_list.filter(fecha__month=mes)
+    if año:
+        ventas_list = ventas_list.filter(fecha__year=año)
+    
     datos = []
     
     for venta in ventas_list:
@@ -313,7 +324,87 @@ def listar_ventas_json(request):
     return JsonResponse(datos, safe=False)
 
 
-@csrf_exempt
+def editar_venta(request, id):
+    """Editar una venta existente"""
+    if request.method == 'PUT':
+        try:
+            venta = get_object_or_404(Venta, id=id)
+            data = json.loads(request.body)
+            nuevos_detalles = data.get('detalles', [])
+            
+            if not nuevos_detalles:
+                return JsonResponse({"ok": False, "error": "La venta debe tener al menos un producto"})
+            
+            # Obtener detalles originales para devolver stock
+            detalles_originales = venta.detalles.all()
+            
+            # Devolver stock original
+            for detalle_original in detalles_originales:
+                producto = detalle_original.producto
+                producto.stock += detalle_original.cantidad
+                producto.save()
+            
+            # Eliminar detalles originales
+            detalles_originales.delete()
+            
+            # Crear nuevos detalles y actualizar stock
+            for detalle_data in nuevos_detalles:
+                producto = get_object_or_404(Producto, id=detalle_data.get('producto_id'))
+                cantidad = detalle_data.get('cantidad')
+                precio_unitario = detalle_data.get('precio_unitario')
+                
+                # Verificar stock disponible
+                if producto.stock < cantidad:
+                    return JsonResponse({
+                        "ok": False, 
+                        "error": f"Stock insuficiente para {producto.nombre}. Disponible: {producto.stock}, Solicitado: {cantidad}"
+                    })
+                
+                # Crear nuevo detalle
+                DetalleVenta.objects.create(
+                    venta=venta,
+                    producto=producto,
+                    cantidad=cantidad,
+                    precio_unitario=precio_unitario
+                )
+                
+                # Actualizar stock
+                producto.stock -= cantidad
+                producto.save()
+            
+            return JsonResponse({"ok": True})
+            
+        except Exception as e:
+            return JsonResponse({"ok": False, "error": str(e)})
+    
+    return JsonResponse({"ok": False, "error": "Método no permitido"})
+
+
+def eliminar_venta(request, id):
+    """Eliminar una venta y sus detalles"""
+    if request.method == 'DELETE':
+        try:
+            venta = get_object_or_404(Venta, id=id)
+            
+            # Obtener detalles para devolver stock
+            detalles = venta.detalles.all()
+            
+            # Devolver stock a los productos
+            for detalle in detalles:
+                producto = detalle.producto
+                producto.stock += detalle.cantidad
+                producto.save()
+            
+            # Eliminar la venta (esto eliminará en cascada los detalles)
+            venta.delete()
+            
+            return JsonResponse({"ok": True})
+        except Exception as e:
+            return JsonResponse({"ok": False, "error": str(e)})
+    
+    return JsonResponse({"ok": False, "error": "Método no permitido"})
+
+
 def obtener_venta(request, id):
     """Obtiene detalles de una venta específica"""
     venta = get_object_or_404(Venta, id=id)
@@ -326,20 +417,23 @@ def obtener_venta(request, id):
         'detalles': []
     }
     
-    total = Decimal('0')
+    total = 0
     for detalle in detalles:
+        subtotal = detalle.subtotal
+        total += subtotal
+        
         datos['detalles'].append({
             'producto': detalle.producto.nombre,
+            'producto_id': detalle.producto.id,
             'cantidad': detalle.cantidad,
             'precio_unitario': str(detalle.precio_unitario),
-            'subtotal': str(detalle.subtotal)
+            'subtotal': str(subtotal)
         })
-        total += detalle.subtotal
     
     datos['total'] = str(total)
     
     return JsonResponse(datos)
-
+@login_required
 def reportes(request):
     tipo = request.GET.get('tipo', 'ventas')
     context = {
@@ -348,7 +442,7 @@ def reportes(request):
     return render(request, 'coffee/reportes.html', context)
 
 
-@csrf_exempt
+@require_POST
 def estadisticas_ventas(request):
     """Obtiene estadísticas de ventas"""
     from django.db.models import Sum, Count, Q
@@ -413,7 +507,7 @@ def estadisticas_ventas(request):
         return JsonResponse({'ok': False, 'error': str(e)})
 
 
-@csrf_exempt
+@require_POST
 def reporte_inventario(request):
     """Obtiene estadísticas de inventario"""
     try:
@@ -456,7 +550,7 @@ def reporte_inventario(request):
         return JsonResponse({'ok': False, 'error': str(e)})
 
 
-@csrf_exempt
+@require_POST
 def reporte_ganancias(request):
     """Obtiene reporte de ganancias"""
     try:
@@ -522,6 +616,7 @@ def reporte_ganancias(request):
         return JsonResponse({'ok': False, 'error': str(e)})
 
 
+@login_required
 def proveedores(request):
     proveedores_list = Proveedor.objects.all()
     context = {
@@ -530,7 +625,7 @@ def proveedores(request):
     return render(request, 'coffee/proveedores.html', context)
 
 
-@csrf_exempt
+@require_POST
 def crear_proveedor(request):
     """Crear un nuevo proveedor"""
     if request.method == 'POST':
@@ -573,7 +668,7 @@ def crear_proveedor(request):
     return JsonResponse({"ok": False})
 
 
-@csrf_exempt
+@require_POST
 def editar_proveedor(request, id):
     """Editar un proveedor existente"""
     if request.method == 'POST':
@@ -609,7 +704,7 @@ def editar_proveedor(request, id):
     return JsonResponse({"ok": False})
 
 
-@csrf_exempt
+@require_POST
 def eliminar_proveedor(request, id):
     """Eliminar un proveedor"""
     try:
@@ -628,7 +723,7 @@ def eliminar_proveedor(request, id):
         return JsonResponse({"ok": False, "error": str(e)})
 
 
-@csrf_exempt
+@require_POST
 def listar_proveedores_json(request):
     """Retorna todos los proveedores en JSON"""
     proveedores_list = Proveedor.objects.all()
@@ -702,13 +797,14 @@ def datos_dashboard(request):
     
     return JsonResponse(datos)
 
+@login_required
 def configuracion_page(request):
     #if not request.user.rol == "Admin":
     #   return redirect("inicio")
     return render(request, "coffee/configuracion.html")
 
 # -------------------- USUARIOS --------------------
-@csrf_exempt
+@require_POST
 def config_usuarios(request):
     try:
         usuarios = Usuario.objects.all().values("id", "nombre", "correo", "rol", "is_active")
@@ -717,7 +813,7 @@ def config_usuarios(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-@csrf_exempt
+@require_POST
 def crear_usuario(request):
     if request.method == "POST":
         datos = json.loads(request.body)
@@ -731,7 +827,7 @@ def crear_usuario(request):
         return JsonResponse({"ok": True})
     return JsonResponse({"ok": False})
 
-@csrf_exempt
+@require_POST
 def editar_usuario(request, id):
     if request.method == "POST":
         u = get_object_or_404(Usuario, id=id)
@@ -744,7 +840,7 @@ def editar_usuario(request, id):
         return JsonResponse({"ok": True})
     return JsonResponse({"ok": False})
 
-@csrf_exempt
+@require_POST
 def eliminar_usuario(request, id):
     if request.method == "POST":
         u = get_object_or_404(Usuario, id=id)
@@ -755,20 +851,22 @@ def eliminar_usuario(request, id):
     return JsonResponse({"ok": False})
 
 # -------------------- ROLES --------------------
+@require_POST
 def config_roles(request):
     roles = Usuario.objects.values("rol").distinct()
     lista = []
     for r in roles:
-        cantidad = Usuario.objects.filter(rol=r["rol"]).count()
-        lista.append({"nombre": r["rol"], "cantidad": cantidad})
+        lista.append({"rol": r["rol"]})
     return JsonResponse(lista, safe=False)
 
 # -------------------- AUDITORÍA --------------------
+@require_POST
 def config_auditoria(request):
     logs = Auditoria.objects.all().order_by("-fecha").values("usuario", "accion", "fecha")
     return JsonResponse(list(logs), safe=False)
 
 # -------------------- SESIONES --------------------
+@require_POST
 def config_sesiones(request):
     sesiones = SesionActiva.objects.all().values("id", "usuario", "ip", "ultima_vez")
     return JsonResponse(list(sesiones), safe=False)

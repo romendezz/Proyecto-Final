@@ -1,6 +1,6 @@
 {% extends 'coffee/base.html' %} 
 {% load static %} 
-{% block title %}Ventas - The Rojas Coffee{% endblock %} 
+{% block title %}Ventas - Rojas Café{% endblock %} 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/ventas.css' %}" />
 {% endblock %} 
@@ -100,29 +100,93 @@
   <!-- SECCIÓN DE HISTORIAL -->
   <div id="seccionHistorial" style="display: none;">
     <div class="card-custom">
-      <h3 class="mb-4"><i class="bi bi-clock-history"></i> Historial de Ventas</h3>
+      <h3 class="mb-4" id="tituloHistorial">
+        <i class="bi bi-clock-history"></i> Historial de Ventas
+      </h3>
       
-      <div class="table-responsive">
-        <table class="table table-hover" id="tablaVentas">
-          <thead class="table-light">
-            <tr>
-              <th>#</th>
-              <th>Fecha</th>
-              <th>Usuario</th>
-              <th>Items</th>
-              <th>Total</th>
-              <th>Opciones</th>
-            </tr>
-          </thead>
-          <tbody id="cuerpoTablaVentas">
-            <tr class="text-center">
-              <td colspan="6">Cargando...</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- SECCIÓN VENTAS DE HOY -->
+      <div id="seccionVentasHoy" style="display: none;">
+        <div class="table-responsive">
+          <table class="table table-hover" id="tablaVentasHoy">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoTablaVentasHoy">
+              <tr class="text-center">
+                <td colspan="6">Cargando ventas de hoy...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- SECCIÓN VENTAS DEL MES -->
+      <div id="seccionVentasMes" style="display: none;">
+        <!-- FILTRO POR MES -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <label for="filtroMes" class="form-label">Filtrar por Mes:</label>
+            <select class="form-select" id="filtroMes">
+              <option value="01">Enero</option>
+              <option value="02">Febrero</option>
+              <option value="03">Marzo</option>
+              <option value="04">Abril</option>
+              <option value="05">Mayo</option>
+              <option value="06">Junio</option>
+              <option value="07">Julio</option>
+              <option value="08">Agosto</option>
+              <option value="09">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="filtroAño" class="form-label">Año:</label>
+            <input type="number" class="form-control" id="filtroAño" min="2020" max="2030">
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <button class="btn btn-primary" id="btnFiltrarMes">
+              <i class="bi bi-funnel"></i> Filtrar por Mes
+            </button>
+            <button class="btn btn-secondary" id="btnLimpiarFiltros">
+              <i class="bi bi-x-circle"></i> Limpiar Filtros
+            </button>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-hover" id="tablaVentasMes">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoTablaVentasMes">
+              <tr class="text-center">
+                <td colspan="6">Cargando ventas del mes...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <button class="btn btn-success" id="btnVolverRegistro">
+      <button class="btn btn-success mt-3" id="btnVolverRegistro">
         <i class="bi bi-arrow-left"></i> Volver a Registrar
       </button>
     </div>
