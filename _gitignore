@@ -1,0 +1,63 @@
+
+# Entorno virtual
+venv/
+.env
+
+# Archivos Python compilados
+__pycache__/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+
+# Archivos de entorno / configuración local
+.env
+*.local
+*.py[cod]
+__pycache__/
+*.so
+*.pyd
+*.pyc
+
+# Base de datos SQLite
+db.sqlite3
+
+
+# Archivos de migraciones generados automáticamente (opcional, si no los versionas)
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Archivos de logs
+*.log
+
+# Archivos de cobertura y tests
+htmlcov/
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+
+# Configuración de editores / IDEs
+.vscode/
+.idea/
+*.swp
+*~
+
+# Archivos de compilación / distribución
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Archivos estáticos y media (si se generan en local)
+# staticfiles/
+# media/
+
+# Archivos de Docker
+*.pid
+*.seed
+
+# Configuración de sistema operativo
+.DS_Store
+Thumbs.db

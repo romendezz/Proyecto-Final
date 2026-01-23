@@ -1,0 +1,118 @@
+/* Estilos específicos del Dashboard */
+
+body {
+  background: #f6efe6; /* Café con leche muy claro */
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+/* Tarjetas de métricas */
+.metric-card {
+  background: #fff8ee;
+  padding: 28px 20px 22px 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(111, 78, 55, 0.1);
+  border: 1px solid #e4d2c1;
+  transition: box-shadow 0.15s;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+}
+
+.metric-card h6 {
+  color: #a67b5b;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.metric-card h2 {
+  color: #4b2e18;
+  font-weight: bold;
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+}
+
+.metric-card:hover {
+  box-shadow: 0 2px 25px 3px rgba(111, 78, 55, 0.13);
+}
+
+h2,
+h4 {
+  color: #4b2e18;
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+canvas {
+  background: #f6ece1;
+  border-radius: 10px;
+  border: 1px solid #e4d2c1;
+  padding: 5px;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+  background: #deb887;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b7885a;
+  border-radius: 4px;
+}
+
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 0;
+    padding: 18px 5px;
+  }
+}
+
+.text-brown {
+  color: #7a5c43;
+}
+
+/* Top 3 productos */
+.top-productos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.top-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f6efe6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.top-item span {
+  font-weight: bold;
+  color: #a67b5b;
+  margin-right: 8px;
+}
+
+.top-item strong {
+  color: #4b2e18;
+  font-size: 1rem;
+}
+
+/* Total en caja */
+.total-caja {
+  text-align: center;
+  background: linear-gradient(135deg, #f6efe6, #fff8ee);
+  border: 1px solid #a67b5b;
+}
+
+.total-caja h6 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.total-caja h2 {
+  font-size: 2.5rem;
+  margin: 0;
+}

@@ -1,0 +1,87 @@
+{% extends 'coffee/base.html' %}
+{% load static %}
+
+{% block title %}Productos - The Rojas Coffee{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+      <h2>
+        {% if vista_actual == 'bajo-stock' %}
+          <i class="bi bi-exclamation-triangle"></i> Productos con Bajo Stock
+        {% else %}
+          <i class="bi bi-box-seam"></i> Productos
+        {% endif %}
+      </h2>
+    </div>
+    <div class="col-md-6 text-end">
+      {% if user.is_staff %}
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+        <i class="bi bi-plus-circle"></i> Agregar Producto
+      </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- BUSCADOR Y FILTROS -->
+  <div class="card-custom mb-4">
+    <h5 class="mb-3"><i class="bi bi-funnel"></i> Buscar y Filtrar</h5>
+    
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Nombre del Producto</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" id="busqueda" class="form-control" placeholder="Buscar por nombre...">
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Proveedor</label>
+        <select id="filtroProveedor" class="form-select">
+          <option value="">Todos los proveedores</option>
+          {% for proveedor in proveedores %}
+            <option value="{{ proveedor.nombre }}">{{ proveedor.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Stock</label>
+        <select id="filtroStock" class="form-select">
+          <option value="">Todos</option>
+          <option value="agotado">Agotado (0 unidades)</option>
+          <option value="bajo">Bajo Stock (&lt;5)</option>
+          <option value="normal">Stock Normal (≥5)</option>
+        </select>
+      </div>
+
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-outline-secondary w-100" id="btnLimpiarFiltros">
+          <i class="bi bi-arrow-counterclockwise"></i> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DE LA TABLA -->
+  <div id="contenedorTabla" class="table-container">
+    {% include 'coffee/tabla_productos.html' %}
+  </div>
+</div>
+
+<!-- MODALES (agregar / editar / eliminar) -->
+{% include 'coffee/modales_productos.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/productos.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,77 @@
+{% extends 'coffee/base.html' %} 
+{% load static %} 
+{% block title %}Proveedores - The Rojas Coffee{% endblock %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/proveedores.css' %}" />
+{% endblock %} 
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+      <h2>
+        <i class="bi bi-truck"></i> Proveedores
+      </h2>
+    </div>
+    <div class="col-md-6 text-end">
+      {% if user.is_staff %}
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+        <i class="bi bi-plus-circle"></i> Agregar Proveedor
+      </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- BUSCADOR Y FILTROS -->
+  <div class="card-custom buscar-filtrar mb-4">
+    <h5 class="mb-3"><i class="bi bi-funnel"></i> Buscar y Filtrar</h5>
+    
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Nombre del Proveedor</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" id="busqueda" class="form-control" placeholder="Buscar por nombre...">
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Contacto</label>
+        <select id="filtroContacto" class="form-select">
+          <option value="">Todos los contactos</option>
+          <option value="telefono">Solo teléfono</option>
+          <option value="email">Solo email</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Estado</label>
+        <select id="filtroEstado" class="form-select">
+          <option value="">Todos</option>
+          <option value="con_productos">Con productos</option>
+          <option value="sin_productos">Sin productos</option>
+        </select>
+      </div>
+
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-outline-secondary w-100" id="btnLimpiarFiltros">
+          <i class="bi bi-arrow-counterclockwise"></i> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DE LA TABLA -->
+  <div class="card-custom table-container">
+    {% include 'coffee/tabla_proveedores.html' %}
+  </div>
+</div>
+
+<!-- MODALES -->
+{% include 'coffee/modales_proveedores.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/proveedores.js' %}"></script>
+{% endblock %}

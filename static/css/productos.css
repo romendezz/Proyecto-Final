@@ -1,0 +1,186 @@
+/* Estilos específicos de Productos */
+
+body {
+  background: #f6efe6; /* Beige café claro */
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+.card-custom h5 {
+  color: #000000;
+  font-weight: 700;
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+h2{
+  color: #4b2e18; /* Café casi negro */
+  font-family: "Georgia", Arial, sans-serif;
+  margin-bottom: 10px;
+}
+
+.input-group-text {
+  background: #a67b5b;
+  color: #fff8ee;
+  border-color: #a67b5b;
+  border-right: 0;
+}
+
+#busqueda {
+  background: #a67b5b;
+  color: #fff8ee;
+  border-color: #a67b5b;
+  border-left: 0;
+}
+
+.input-group:focus-within {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-radius: 0.375rem;
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within #busqueda {
+  border-color: #86b7fe;
+}
+
+#busqueda:focus {
+  box-shadow: none;
+}
+
+.input-group:focus-within .input-group-text {
+  box-shadow: none;
+}
+
+#busqueda::placeholder {
+  color: rgba(255, 248, 238, 0.8);
+}
+
+.table-container {
+  background: #a67b5b;
+  padding: 25px;
+  border-radius: 15px;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.table th,
+.table td {
+  padding: 12px 8px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table th:nth-child(1) { width: 8%; } /* ID */
+.table th:nth-child(2) { width: 32%; } /* Nombre */
+.table th:nth-child(3) { width: 15%; } /* Precio */
+.table th:nth-child(4) { width: 12%; } /* Stock */
+.table th:nth-child(5) { width: 23%; } /* Proveedor */
+.table th:nth-child(6) { width: 10%; } /* Opciones (solo admin) */
+
+.table thead tr {
+  background: #a67b5b;
+  color: #fff8ee;
+}
+
+.table tbody tr:nth-child(even) {
+  background: rgba(255, 248, 238, 0.1);
+}
+
+.table tbody tr:nth-child(odd) {
+  background: rgba(255, 248, 238, 0.05);
+}
+
+.btn-primary {
+  background: #6f4e37;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #4b2e18;
+}
+
+.btn-warning {
+  background: #deb887;
+  border: none;
+  color: #4b2e18;
+}
+
+.btn-danger {
+  background: #a52a2a;
+  border: none;
+  color: #a67b5b;
+}
+
+.btn-danger:hover {
+  background: #8b1a1a;
+}
+
+.btn-danger i {
+  color: #ffffff !important;
+}
+
+.btn-danger:hover i {
+  color: #ffffff !important;
+}
+
+.modal-content {
+  background: #a67b5b;
+  border-radius: 15px;
+  border: 2px solid #deb887;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #e4d2c1;
+}
+
+.modal .form-control,
+.modal .form-select {
+  background: #8b5a3c;
+  border: 1px solid #deb887;
+  color: #ffffff;
+}
+
+.modal .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus {
+  background: #8b5a3c;
+  color: #ffffff;
+  border-color: #deb887;
+}
+
+.modal .form-control option,
+.modal .form-select option {
+  background: #8b5a3c;
+  color: #ffffff;
+}
+
+.form-control,
+.form-select {
+  background: #a67b5b;
+  border: 1px solid #deb887;
+  color: #ffffff;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-control:focus,
+.form-select:focus {
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #deb887;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b7885a;
+  border-radius: 4px;
+}

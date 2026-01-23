@@ -1,0 +1,70 @@
+{% extends 'coffee/base.html' %} {% load static %} {% block title %} Inicio -
+Rojas Café {% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/inicio.css' %}" />
+{% endblock %} {% block content %}
+<h2><i class="bi bi-cup-hot"></i> Bienvenido</h2>
+
+<!-- TARJETAS -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <i class="bi bi-box fs-2 text-brown"></i>
+        <h6>Total Productos</h6>
+      </div>
+      <h2>{{ total_productos }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <i class="bi bi-box-seam fs-2 text-brown"></i>
+        <h6>Total Proveedores</h6>
+      </div>
+      <h2>{{ total_proveedores }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <i class="bi bi-archive fs-2 text-brown"></i>
+        <h6>Stock Total</h6>
+      </div>
+      <h2>{{ stock_total }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <i class="bi bi-bag fs-2 text-brown"></i>
+        <h6>Agotados</h6>
+      </div>
+      <h2>{{ productos_agotados }}</h2>
+    </div>
+  </div>
+</div>
+
+<!-- GRÁFICA / INFORMACIÓN -->
+<div class="row">
+  <div class="col-md-8">
+    <div class="metric-card">
+      <h6 class="mb-3">Ventas últimos 6 meses</h6>
+      <canvas id="grafica1"></canvas>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="metric-card">
+      <h6 class="mb-3">Inventario (%)</h6>
+      <canvas id="grafica2"></canvas>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/inicio.js' %}"></script>
+{% endblock %}

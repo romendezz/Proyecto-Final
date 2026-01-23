@@ -1,0 +1,50 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Proveedor</th>{% if user.is_staff %}<th>Opciones</th>{% endif %}
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for p in productos %}
+        <tr data-id="{{ p.id }}" {% if p.stock == 0 %}class="table-danger"{% endif %}>
+            <td>{{ p.id }}</td>
+            <td class="td-nombre">{{ p.nombre }}</td>
+            <td class="td-precio">{{ p.precio }}</td>
+            <td class="td-stock">{{ p.stock }}</td>
+            <td class="td-proveedor">{{ p.proveedor }}</td>{% if user.is_staff %}
+            <td>
+                <button class="btn btn-warning btn-sm btnEditar" data-id="{{ p.id }}"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-danger btn-sm btnEliminar" data-id="{{ p.id }}"><i class="bi bi-trash"></i></button>
+            </td>{% endif %}
+        </tr>
+    {% empty %}
+        <tr><td{% if user.is_staff %} colspan="6"{% else %} colspan="5"{% endif %}>No hay productos</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<!-- PAGINACIÓN -->
+<div class="d-flex justify-content-center mt-3">
+    <nav>
+        <ul class="pagination">
+
+            {% if productos.has_previous %}
+            <li class="page-item"><a class="page-link pagina" data-page="{{ productos.previous_page_number }}">«</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">«</span></li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Página {{ productos.number }} de {{ productos.paginator.num_pages }}</span>
+            </li>
+
+            {% if productos.has_next %}
+            <li class="page-item"><a class="page-link pagina" data-page="{{ productos.next_page_number }}">»</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">»</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+

@@ -1,0 +1,114 @@
+{% extends 'coffee/base.html' %}
+{% load static %}
+
+{% block title %}Configuración del Sistema{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/configuracion.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <h2><i class="bi bi-gear"></i> Configuración del Sistema</h2>
+
+    <!-- TABS -->
+    <ul class="nav nav-tabs mb-4" id="tabsConfig">
+        <li class="nav-item">
+            <a class="nav-link active" data-tab="usuarios" href="#">Usuarios</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-tab="roles" href="#">Roles</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-tab="auditoria" href="#">Auditoría</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-tab="sesiones" href="#">Sesiones</a>
+        </li>
+    </ul>
+
+    <!-- Contenedor dinámico -->
+    <div id="contenedorConfig">
+        <p class="text-center text-muted">Cargando...</p>
+    </div>
+
+</div>
+
+<!-- MODAL CREAR/EDITAR USUARIO -->
+<div class="modal fade" id="modalUsuario" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tituloModalUsuario">Crear Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formUsuario">
+          <input type="hidden" id="usuarioId">
+          <div class="mb-3">
+            <label>Nombre</label>
+            <input type="text" id="usuarioNombre" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Correo</label>
+            <input type="email" id="usuarioCorreo" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Rol</label>
+            <select id="usuarioRol" class="form-select">
+              <option value="Admin">Admin</option>
+              <option value="Vendedor">Vendedor</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="btnGuardarUsuario" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CREAR/EDITAR ROL -->
+<div class="modal fade" id="modalRol" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tituloModalRol">Crear Rol</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formRol">
+          <div class="mb-3">
+            <label for="rolNombre" class="form-label">Nombre del Rol</label>
+            <input type="text" id="rolNombre" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnGuardarRol" class="btn btn-primary">Guardar Rol</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast position-fixed bottom-0 end-0 m-3" id="toastConfig">
+  <div class="toast-body"></div>
+</div>
+
+<script>
+  // Datos de prueba para renderizar
+  usuariosActuales = [
+    {id:1, nombre:"Juan", correo:"juan@test.com", rol:"Admin"},
+    {id:2, nombre:"Ana", correo:"ana@test.com", rol:"Vendedor"}
+  ];
+  renderizarTablaUsuarios();
+</script>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/configuracion.js' %}"></script>
+{% endblock %}

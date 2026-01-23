@@ -1,0 +1,60 @@
+{% extends 'coffee/base.html' %} 
+{% load static %} 
+{% block title %}Reportes - Rojas Café{% endblock %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reportes.css' %}" />
+{% endblock %} 
+
+{% block content %}
+<div class="container-fluid">
+  <h2><i class="bi bi-graph-up"></i> Reportes</h2>
+
+  <!-- TABS PARA CAMBIAR DE VISTA -->
+  <ul class="nav nav-tabs mb-4" id="tabsReportes">
+    <li class="nav-item">
+      <a class="nav-link {% if tipo_reporte == 'ventas' or not tipo_reporte %}active{% endif %}" href="?tipo=ventas">
+        <i class="bi bi-graph-up"></i> Ventas
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if tipo_reporte == 'inventario' %}active{% endif %}" href="?tipo=inventario">
+        <i class="bi bi-boxes"></i> Inventario
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if tipo_reporte == 'ganancias' %}active{% endif %}" href="?tipo=ganancias">
+        <i class="bi bi-cash-coin"></i> Ganancias
+      </a>
+    </li>
+  </ul>
+
+  <!-- CONTENEDOR DINÁMICO SEGÚN TIPO -->
+  <div id="contenedorReporte"></div>
+</div>
+
+<!-- TOAST PARA NOTIFICACIONES -->
+<div class="toast position-fixed bottom-0 end-0 m-3" id="toastReporte" role="alert">
+  <div class="toast-body">
+    Datos cargados exitosamente
+  </div>
+</div>
+
+{% endblock %} 
+
+{% block extra_js %}
+<script>
+  // Determinar qué tipo de reporte cargar
+  const tipoReporte = '{{ tipo_reporte }}' || 'ventas';
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    if (tipoReporte === 'inventario') {
+      cargarReporteInventario();
+    } else if (tipoReporte === 'ganancias') {
+      cargarReporteGanancias();
+    } else {
+      cargarReporteVentas();
+    }
+  });
+</script>
+<script src="{% static 'js/reportes.js' %}"></script>
+{% endblock %}

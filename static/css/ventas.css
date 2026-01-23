@@ -1,0 +1,56 @@
+/* Estilos específicos para la página de Ventas */
+
+body {
+  background: #f6efe6; /* Beige café claro */
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+h2{
+  color: #4b2e18; /* Café casi negro */
+  font-family: "Georgia", Arial, sans-serif;
+  margin-bottom: 10px;
+}
+
+.card-custom {
+  background: #a67b5b;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.card-custom h5 {
+  color: #fff8ee;
+  font-weight: 600;
+  font-family: "Georgia", Arial, sans-serif;
+  
+}
+
+.card-custom table {
+  font-size: 15px;
+}
+
+.card-custom .btn-primary {
+  background: #6f4e37;
+  border: none;
+}
+
+.card-custom .btn-primary:hover {
+  background: #4b2e18;
+}
+
+.card-custom .btn-success {
+  background: #4b2e18;
+  border: none;
+}
+
+.card-custom .btn-success:hover {
+  background: #4b2e18;
+}
+
+.card-custom .btn-danger {
+  background: #8b4c39;
+  border: none;
+}
+
+.card-custom .btn-danger:hover {
+  background: #6d3a2c;
+}
