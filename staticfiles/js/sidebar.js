@@ -23,8 +23,13 @@ document.addEventListener('DOMContentLoaded', function () {
   menuPrincipals.forEach((menu) => {
     const parent = menu.closest('.menu-group');
 
-    // Expandir menú al hacer clic
+    // Expandir menú al hacer clic (solo si tiene parent menu-group)
     menu.addEventListener('click', function (e) {
+      // Si no tiene parent, permitir navegación normal
+      if (!parent) {
+        return; // No hacer nada, dejar que el enlace funcione normalmente
+      }
+      
       e.preventDefault();
       parent.classList.toggle('active');
 
@@ -37,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Si ya estamos en esa sección, expandir el menú
-    if (menu.classList.contains('activo')) {
+    if (menu.classList.contains('activo') && parent) {
       parent.classList.add('active');
     }
   });

@@ -1,27 +1,10 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>ID</th><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Productos</th>{% if user.is_staff %}<th>Opciones</th>{% endif %}
+            <th>ID</th><th>Nombre</th><th>Teléfono</th><th>Productos</th>{% if user.is_staff %}<th>Opciones</th>{% endif %}
         </tr>
     </thead>
 
-    <tbody>
-    {% for p in proveedores %}
-        <tr data-id="{{ p.id }}">
-            <td>{{ p.id }}</td>
-            <td class="td-nombre">{{ p.nombre }}</td>
-            <td class="td-telefono">{{ p.telefono }}</td>
-            <td class="td-email">{{ p.correo }}</td>
-            <td class="td-productos">{{ p.producto_set.count }}</td>
-            {% if user.is_staff %}
-            <td>
-                <button class="btn btn-warning btn-sm btnEditar" data-id="{{ p.id }}"><i class="bi bi-pencil"></i></button>
-                <button class="btn btn-danger btn-sm btnEliminar" data-id="{{ p.id }}"><i class="bi bi-trash"></i></button>
-            </td>
-            {% endif %}
-        </tr>
-    {% empty %}
-        <tr><td{% if user.is_staff %} colspan="6"{% else %} colspan="5"{% endif %}>No hay proveedores</td></tr>
-    {% endfor %}
+    <tbody id="cuerpoTabla">
     </tbody>
 </table>

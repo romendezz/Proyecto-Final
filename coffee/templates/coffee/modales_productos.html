@@ -10,6 +10,7 @@
     <div class="modal-body">
         <!-- MODAL AGREGAR -->
         <form id="formAgregar">
+        {% csrf_token %}
         <div class="mb-3">
             <label class="form-label">Nombre</label>
             <input type="text" class="form-control" id="agregarNombre" required>
@@ -25,7 +26,6 @@
         <div class="mb-3">
             <label class="form-label">Proveedor</label>
             <select class="form-select" id="agregarProveedor" required>
-                <option value="">Seleccionar proveedor</option>
                 {% for proveedor in proveedores %}
                 <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
                 {% endfor %}
@@ -51,6 +51,7 @@
     </div>
     <div class="modal-body">
         <form id="formEditar">
+        {% csrf_token %}
         <input type="hidden" id="editarId">
         <div class="mb-3">
             <label class="form-label">Nombre</label>
@@ -66,12 +67,17 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Proveedor</label>
-            <select class="form-select" id="editarProveedor" required>
-                <option value="">Seleccionar proveedor</option>
-                {% for proveedor in proveedores %}
-                <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
-                {% endfor %}
-            </select>
+            <div id="contenedorProveedorEditar">
+                <select class="form-select" id="editarProveedor" required>
+                    <option value="">Seleccionar proveedor</option>
+                    {% for proveedor in proveedores %}
+                    <option value="{{ proveedor.id }}" data-nombre="{{ proveedor.nombre }}">{{ proveedor.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div id="mensajeProveedorActual" class="alert alert-info mt-2" style="display: none;">
+                    <i class="bi bi-info-circle"></i> Este producto está asignado actualmente al proveedor: <strong id="nombreProveedorActual"></strong>
+                </div>
+            </div>
         </div>
         </form>
     </div>

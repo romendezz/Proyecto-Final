@@ -1,12 +1,13 @@
-from django.shortcuts import render, get_object_or_404 , HttpResponse, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from .models import Auditoria, Producto, Proveedor, Usuario, Venta, DetalleVenta
 from datetime import datetime
-from .models import Producto, Proveedor, Venta, DetalleVenta
+import json
 from django.utils import timezone
 import json
 from decimal import Decimal
@@ -26,9 +27,7 @@ def login_view(request):
             login(request, user)
             return redirect('inicio')
         else:
-            return render(request, 'coffee/login.html', {
-                'error': 'Usuario o contraseña incorrectos'
-            })
+            messages.error(request, 'Usuario o contraseña incorrectos. Por favor, intenta nuevamente.')
     
     return render(request, 'coffee/login.html')
 
@@ -105,35 +104,72 @@ def buscar_productos(request):
     return JsonResponse(datos, safe=False)
 
 
-@require_POST
+@csrf_exempt
 def crear_producto(request):
+    print("=== CREAR PRODUCTO ===")
+    print(f"Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    
     if request.method == 'POST':
         data = json.loads(request.body)
+        print(f"Datos recibidos: {data}")
         try:
             # Validaciones
             nombre = data.get("nombre", "").strip()
             if not nombre or len(nombre) < 3:
+                print("Error: Nombre inválido")
                 return JsonResponse({"ok": False, "error": "El nombre debe tener al menos 3 caracteres"})
+            
+            # Validar que el nombre no sea solo números
+            if re.match('^[0-9]+$', nombre):
+                print("Error: Nombre solo números")
+                return JsonResponse({"ok": False, "error": "El nombre no puede ser solo números"})
+            
+            # Validar que el nombre tenga al menos una letra
+            if not re.search('[a-zA-Z]', nombre):
+                print("Error: Nombre sin letras")
+                return JsonResponse({"ok": False, "error": "El nombre debe contener al menos una letra"})
             
             try:
                 precio = Decimal(str(data.get("precio", 0)))
                 if precio < 0:
+                    print("Error: Precio negativo")
                     return JsonResponse({"ok": False, "error": "El precio no puede ser negativo"})
+                if precio > 999999:
+                    print("Error: Precio muy alto")
+                    return JsonResponse({"ok": False, "error": "El precio no puede ser mayor a 999999"})
             except:
+                print("Error: Precio inválido")
                 return JsonResponse({"ok": False, "error": "Precio inválido"})
             
             try:
                 stock = int(data.get("stock", 0))
                 if stock < 0:
+                    print("Error: Stock negativo")
                     return JsonResponse({"ok": False, "error": "El stock no puede ser negativo"})
+                if stock > 999999:
+                    print("Error: Stock muy alto")
+                    return JsonResponse({"ok": False, "error": "El stock no puede ser mayor a 999999"})
             except:
+                print("Error: Stock inválido")
                 return JsonResponse({"ok": False, "error": "Stock inválido"})
             
             # Verificar si el producto ya existe
             if Producto.objects.filter(nombre__iexact=nombre).exists():
+                print("Error: Producto ya existe")
                 return JsonResponse({"ok": False, "error": "El producto ya existe"})
             
-            proveedor = Proveedor.objects.get(id=data.get("proveedor_id")) if data.get("proveedor_id") else Proveedor.objects.first()
+            # Validar proveedor
+            proveedor_id = data.get("proveedor_id")
+            if not proveedor_id:
+                print("Error: Proveedor no proporcionado")
+                return JsonResponse({"ok": False, "error": "Debe seleccionar un proveedor"})
+            
+            try:
+                proveedor = Proveedor.objects.get(id=proveedor_id)
+            except Proveedor.DoesNotExist:
+                print("Error: Proveedor no existe")
+                return JsonResponse({"ok": False, "error": "El proveedor seleccionado no existe"})
             
             producto = Producto.objects.create(
                 nombre=nombre,
@@ -141,38 +177,70 @@ def crear_producto(request):
                 stock=stock,
                 proveedor=proveedor
             )
-            return JsonResponse({"ok": True, "id": producto.id})
+            print(f"Producto creado: {producto.nombre}")
+            
+            response_data = {"ok": True, "id": producto.id}
+            print(f"Respuesta: {response_data}")
+            return JsonResponse(response_data)
         except Exception as e:
+            print(f"Error en crear_producto: {e}")
             return JsonResponse({"ok": False, "error": str(e)})
+    print("Error: Método no permitido")
     return JsonResponse({"ok": False})
-
 
 @require_POST
 def editar_producto(request, id):
+    print(f"=== EDITAR PRODUCTO {id} ===")
+    print(f"Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    
     if request.method == 'POST':
         p = get_object_or_404(Producto, id=id)
         data = json.loads(request.body)
+        print(f"Datos recibidos: {data}")
         
         try:
             # Validaciones
             nombre = data.get("nombre", p.nombre).strip()
             if nombre != p.nombre and not nombre:
+                print("Error: Nombre vacío")
                 return JsonResponse({"ok": False, "error": "El nombre no puede estar vacío"})
             if len(nombre) < 3:
+                print("Error: Nombre muy corto")
                 return JsonResponse({"ok": False, "error": "El nombre debe tener al menos 3 caracteres"})
+            
+            # Validar que el nombre no sea solo números
+            if nombre and re.match('^[0-9]+$', nombre):
+                print("Error: Nombre solo números")
+                return JsonResponse({"ok": False, "error": "El nombre no puede ser solo números"})
+            
+            # Validar que el nombre tenga al menos una letra
+            if nombre and not re.search('[a-zA-Z]', nombre):
+                print("Error: Nombre sin letras")
+                return JsonResponse({"ok": False, "error": "El nombre debe contener al menos una letra"})
             
             try:
                 precio = Decimal(str(data.get("precio", p.precio)))
                 if precio < 0:
+                    print("Error: Precio negativo")
                     return JsonResponse({"ok": False, "error": "El precio no puede ser negativo"})
+                if precio > 999999:
+                    print("Error: Precio muy alto")
+                    return JsonResponse({"ok": False, "error": "El precio no puede ser mayor a 999999"})
             except:
+                print("Error: Precio inválido")
                 return JsonResponse({"ok": False, "error": "Precio inválido"})
             
             try:
                 stock = int(data.get("stock", p.stock))
                 if stock < 0:
+                    print("Error: Stock negativo")
                     return JsonResponse({"ok": False, "error": "El stock no puede ser negativo"})
+                if stock > 999999:
+                    print("Error: Stock muy alto")
+                    return JsonResponse({"ok": False, "error": "El stock no puede ser mayor a 999999"})
             except:
+                print("Error: Stock inválido")
                 return JsonResponse({"ok": False, "error": "Stock inválido"})
             
             p.nombre = nombre
@@ -184,10 +252,17 @@ def editar_producto(request, id):
                 p.proveedor = proveedor
             
             p.save()
-            return JsonResponse({"ok": True})
+            print(f"Producto actualizado: {p.nombre}")
+            
+            response_data = {"ok": True}
+            print(f"Respuesta: {response_data}")
+            return JsonResponse(response_data)
         except Exception as e:
+            print(f"Error en editar_producto: {e}")
             return JsonResponse({"ok": False, "error": str(e)})
-    return JsonResponse({"ok": False})
+    
+    print("Error: Método no permitido")
+    return JsonResponse({"ok": False, "error": "Método no permitido"})
 
 
 @require_POST
@@ -210,15 +285,21 @@ def ventas(request):
     return render(request, 'coffee/ventas.html', context)
 
 
-@require_POST
+@csrf_exempt
 def crear_venta(request):
     """Crear una nueva venta con detalles"""
+    print("=== CREAR VENTA ===")
+    print(f"Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            print(f"Datos recibidos: {data}")
             productos_venta = data.get('productos', [])
             
             if not productos_venta:
+                print("Error: No hay productos en la venta")
                 return JsonResponse({"ok": False, "error": "No hay productos en la venta"})
             
             # Validar que cada producto tenga datos válidos
@@ -244,6 +325,7 @@ def crear_venta(request):
             venta = Venta.objects.create(
                 usuario=request.user if request.user.is_authenticated else None
             )
+            print(f"Venta creada: {venta.id}")
             
             total = Decimal('0')
             
@@ -273,15 +355,19 @@ def crear_venta(request):
                 
                 total += subtotal
             
-            return JsonResponse({
+            response_data = {
                 "ok": True,
                 "venta_id": venta.id,
                 "total": str(total),
                 "fecha": venta.fecha.strftime('%d/%m/%Y %H:%M')
-            })
+            }
+            print(f"Respuesta: {response_data}")
+            return JsonResponse(response_data)
         except Exception as e:
+            print(f"Error en crear_venta: {e}")
             return JsonResponse({"ok": False, "error": str(e)})
     
+    print("Error: Método no permitido")
     return JsonResponse({"ok": False})
 
 
@@ -433,6 +519,7 @@ def obtener_venta(request, id):
     datos['total'] = str(total)
     
     return JsonResponse(datos)
+
 @login_required
 def reportes(request):
     tipo = request.GET.get('tipo', 'ventas')
@@ -620,128 +707,174 @@ def reporte_ganancias(request):
 def proveedores(request):
     proveedores_list = Proveedor.objects.all()
     context = {
-        'proveedores': proveedores_list,
     }
     return render(request, 'coffee/proveedores.html', context)
 
 
-@require_POST
+@csrf_exempt
 def crear_proveedor(request):
-    """Crear un nuevo proveedor"""
-    if request.method == 'POST':
+    """Crear un proveedor"""
+    print("=== CREAR PROVEEDOR ===")
+    print(f"Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    
+    if request.method == "POST":
         try:
-            data = json.loads(request.body)
+            datos = json.loads(request.body)
+            print(f"Datos recibidos: {datos}")
             
             # Validaciones
-            nombre = data.get("nombre", "").strip()
-            if not nombre or len(nombre) < 3:
+            nombre = datos.get("nombre", "").strip()
+            if not nombre:
+                print("Error: Nombre vacío")
+                return JsonResponse({"ok": False, "error": "El nombre es requerido"})
+            
+            if len(nombre) < 3:
+                print("Error: Nombre muy corto")
                 return JsonResponse({"ok": False, "error": "El nombre debe tener al menos 3 caracteres"})
             
-            contacto = data.get("contacto", "").strip()
-            if not contacto:
-                return JsonResponse({"ok": False, "error": "El contacto es requerido"})
+            # Validar que el nombre no sea solo números
+            if re.match('^[0-9]+$', nombre):
+                print("Error: Nombre solo números")
+                return JsonResponse({"ok": False, "error": "El nombre no puede ser solo números"})
             
-            email = data.get("email", "").strip()
-            if email:
-                email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-                if not re.match(email_regex, email):
-                    return JsonResponse({"ok": False, "error": "Email inválido"})
+            # Validar que el nombre tenga al menos una letra
+            if not re.search('[a-zA-Z]', nombre):
+                print("Error: Nombre sin letras")
+                return JsonResponse({"ok": False, "error": "El nombre debe contener al menos una letra"})
             
-            # Verificar no hay duplicado
+            telefono = datos.get("telefono", "").strip()
+            if not telefono:
+                print("Error: Teléfono vacío")
+                return JsonResponse({"ok": False, "error": "El teléfono es requerido"})
+            
+            # Validar teléfono
+            if not re.match(r'^[\d\-\s\(\)]+$', telefono):
+                print("Error: Teléfono inválido")
+                return JsonResponse({"ok": False, "error": "El teléfono solo puede contener números, guiones, espacios y paréntesis"})
+            
+            if len(telefono) < 7:
+                print("Error: Teléfono muy corto")
+                return JsonResponse({"ok": False, "error": "El teléfono debe tener al menos 7 caracteres"})
+            
+            direccion = datos.get("direccion", "").strip()
+            
+            # Verificar si el proveedor ya existe
             if Proveedor.objects.filter(nombre__iexact=nombre).exists():
-                return JsonResponse({"ok": False, "error": "El proveedor ya existe"})
+                print("Error: Proveedor ya existe")
+                return JsonResponse({"ok": False, "error": "Ya existe un proveedor con ese nombre"})
             
-            proveedor = Proveedor.objects.create(
+            prov = Proveedor.objects.create(
                 nombre=nombre,
-                telefono=contacto,
-                correo=email,
+                telefono=telefono,
+                direccion=direccion
             )
+            print(f"Proveedor creado: {prov.nombre}")
             
-            return JsonResponse({
-                "ok": True,
-                "id": proveedor.id,
-                "mensaje": "Proveedor creado exitosamente"
-            })
+            Auditoria.objects.create(usuario=request.user.username, accion=f"Creó proveedor {prov.nombre}")
+            
+            response_data = {"ok": True, "id": prov.id, "mensaje": "Proveedor creado exitosamente"}
+            print(f"Respuesta: {response_data}")
+            return JsonResponse(response_data)
         except Exception as e:
+            print(f"Error en crear_proveedor: {e}")
             return JsonResponse({"ok": False, "error": str(e)})
     
-    return JsonResponse({"ok": False})
+    print("Error: Método no permitido")
+    return JsonResponse({"ok": False, "error": "Método no permitido"})
 
 
-@require_POST
+@csrf_exempt
 def editar_proveedor(request, id):
     """Editar un proveedor existente"""
+    print(f"=== EDITAR PROVEEDOR {id} ===")
+    print(f"Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    
     if request.method == 'POST':
         try:
             proveedor = get_object_or_404(Proveedor, id=id)
             data = json.loads(request.body)
+            print(f"Datos recibidos: {data}")
             
             # Validaciones
             nombre = data.get("nombre", proveedor.nombre).strip()
             if not nombre or len(nombre) < 3:
+                print("Error: Nombre inválido")
                 return JsonResponse({"ok": False, "error": "El nombre debe tener al menos 3 caracteres"})
             
             contacto = data.get("contacto", proveedor.telefono).strip()
             if not contacto:
+                print("Error: Contacto vacío")
                 return JsonResponse({"ok": False, "error": "El contacto es requerido"})
-            
-            email = data.get("email", proveedor.correo).strip()
-            if email:
-                email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-                if not re.match(email_regex, email):
-                    return JsonResponse({"ok": False, "error": "Email inválido"})
             
             proveedor.nombre = nombre
             proveedor.telefono = contacto
-            proveedor.correo = email
-            proveedor.email = email
+            proveedor.correo = ""  # Email eliminado
             proveedor.save()
+            print(f"Proveedor actualizado: {proveedor.nombre}")
             
-            return JsonResponse({"ok": True, "mensaje": "Proveedor actualizado exitosamente"})
+            response_data = {"ok": True, "mensaje": "Proveedor actualizado exitosamente"}
+            print(f"Respuesta: {response_data}")
+            return JsonResponse(response_data)
         except Exception as e:
+            print(f"Error en editar_proveedor: {e}")
             return JsonResponse({"ok": False, "error": str(e)})
     
-    return JsonResponse({"ok": False})
-
-
-@require_POST
+    print("Error: Método no permitido")
+    return JsonResponse({"ok": False, "error": "Método no permitido"})
+@csrf_exempt
 def eliminar_proveedor(request, id):
     """Eliminar un proveedor"""
+    print(f"=== ELIMINAR PROVEEDOR {id} ===")
+    print(f"Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    
     try:
         proveedor = get_object_or_404(Proveedor, id=id)
+        print(f"Proveedor a eliminar: {proveedor.nombre}")
         
         # Verificar si tiene productos asociados
-        if proveedor.productos.exists():
+        if proveedor.producto_set.exists():
+            print("Error: Tiene productos asociados")
             return JsonResponse({
                 "ok": False,
                 "error": "No se puede eliminar, tiene productos asociados"
             })
         
         proveedor.delete()
+        print(f"Proveedor eliminado: {proveedor.nombre}")
         return JsonResponse({"ok": True, "mensaje": "Proveedor eliminado"})
     except Exception as e:
+        print(f"Error en eliminar_proveedor: {e}")
         return JsonResponse({"ok": False, "error": str(e)})
 
 
-@require_POST
 def listar_proveedores_json(request):
     """Retorna todos los proveedores en JSON"""
-    proveedores_list = Proveedor.objects.all()
-    datos = []
+    print("=== LISTAR PROVEEDORES JSON ===")
+    print(f"Method: {request.method}")
     
-    for prov in proveedores_list:
-        cantidad_productos = prov.producto_set.count()
-        datos.append({
-            'id': prov.id,
-            'nombre': prov.nombre,
-            'contacto': prov.telefono,
-            'email': prov.correo,
-            'productos': cantidad_productos,
-        })
-    
-    return JsonResponse(datos, safe=False)
-
-
+    try:
+        proveedores_list = Proveedor.objects.all()
+        datos = []
+        
+        for prov in proveedores_list:
+            cantidad_productos = prov.producto_set.count()
+            datos.append({
+                'id': prov.id,
+                'nombre': prov.nombre,
+                'contacto': prov.telefono,
+                'email': prov.correo,
+                'productos': cantidad_productos,
+                'direccion': getattr(prov, 'direccion', ''),
+            })
+        
+        print(f"Proveedores encontrados: {len(datos)}")
+        return JsonResponse(datos, safe=False)
+    except Exception as e:
+        print(f"Error en listar_proveedores_json: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
 def datos_dashboard(request):
     """Retorna datos para el dashboard/inicio"""
     from django.db.models import Sum, Count
@@ -797,76 +930,140 @@ def datos_dashboard(request):
     
     return JsonResponse(datos)
 
+
 @login_required
 def configuracion_page(request):
-    #if not request.user.rol == "Admin":
-    #   return redirect("inicio")
+    if not request.user.is_staff:
+        return render(request, 'coffee/403.html', status=403)
     return render(request, "coffee/configuracion.html")
 
+
 # -------------------- USUARIOS --------------------
-@require_POST
+@login_required
 def config_usuarios(request):
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Acceso denegado'}, status=403)
     try:
-        usuarios = Usuario.objects.all().values("id", "nombre", "correo", "rol", "is_active")
+        usuarios = Usuario.objects.all().values("id", "username", "first_name", "rol", "is_active")
         lista = list(usuarios)
+        print(f"Usuarios: {lista}")
         return JsonResponse(lista, safe=False)
+
     except Exception as e:
+        print(f"Error en config_usuarios: {e}")
         return JsonResponse({"error": str(e)}, status=500)
 
-@require_POST
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@login_required
 def crear_usuario(request):
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Acceso denegado'}, status=403)
+    print("=== CREAR USUARIO ===")
+    print(f"Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    
     if request.method == "POST":
-        datos = json.loads(request.body)
-        u = Usuario.objects.create(
-            username=datos["correo"],
-            nombre=datos["nombre"],
-            email=datos["correo"],
-            rol=datos["rol"]
-        )
-        Auditoria.objects.create(usuario=request.user.username, accion=f"Creó usuario {u.nombre}")
-        return JsonResponse({"ok": True})
+        try:
+            datos = json.loads(request.body)
+            print(f"Datos recibidos: {datos}")
+            
+            u = Usuario.objects.create(
+                username=datos["username"],
+                first_name=datos.get("first_name", ""),
+                email="",
+                rol=datos["rol"]
+            )
+            print(f"Usuario creado: {u.username}")
+            
+            # Establecer contraseña si se proporciona
+            password = datos.get("password")
+            if password:
+                u.set_password(password)
+                u.save()
+                print("Contraseña establecida")
+            
+            Auditoria.objects.create(usuario=request.user.username, accion=f"Creó usuario {u.username}")
+            
+            response_data = {"ok": True}
+            print(f"Respuesta a enviar: {response_data}")
+            return JsonResponse(response_data)
+        except Exception as e:
+            print(f"Error en crear_usuario: {e}")
+            return JsonResponse({"ok": False, "error": str(e)})
     return JsonResponse({"ok": False})
 
-@require_POST
+
+@csrf_exempt
+@login_required
 def editar_usuario(request, id):
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Acceso denegado'}, status=403)
+    print(f"=== EDITAR USUARIO {id} ===")
     if request.method == "POST":
-        u = get_object_or_404(Usuario, id=id)
-        datos = json.loads(request.body)
-        u.nombre = datos["nombre"]
-        u.email = datos["correo"]
-        u.rol = datos["rol"]
-        u.save()
-        Auditoria.objects.create(usuario=request.user.username, accion=f"Editó usuario {u.nombre}")
-        return JsonResponse({"ok": True})
+        try:
+            u = get_object_or_404(Usuario, id=id)
+            datos = json.loads(request.body)
+            print(f"Datos recibidos: {datos}")
+            
+            u.username = datos["username"]
+            u.first_name = datos.get("first_name", "")
+            u.rol = datos["rol"]
+            
+            # Actualizar contraseña si se proporciona
+            password = datos.get("password")
+            if password and password.strip():
+                u.set_password(password)
+                print("Contraseña actualizada")
+            
+            u.save()
+            print(f"Usuario actualizado: {u.username}")
+            
+            Auditoria.objects.create(usuario=request.user.username, accion=f"Editó usuario {u.username}")
+            return JsonResponse({"ok": True})
+        except Exception as e:
+            print(f"Error en editar_usuario: {e}")
+            return JsonResponse({"ok": False, "error": str(e)})
     return JsonResponse({"ok": False})
 
-@require_POST
+
+@csrf_exempt
+@login_required
 def eliminar_usuario(request, id):
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Acceso denegado'}, status=403)
+    print(f"=== ELIMINAR USUARIO {id} ===")
     if request.method == "POST":
-        u = get_object_or_404(Usuario, id=id)
-        nombre = u.nombre
-        u.delete()
-        Auditoria.objects.create(usuario=request.user.username, accion=f"Eliminó usuario {nombre}")
-        return JsonResponse({"ok": True})
+        try:
+            u = get_object_or_404(Usuario, id=id)
+            username = u.username
+            u.delete()
+            print(f"Usuario eliminado: {username}")
+            
+            Auditoria.objects.create(usuario=request.user.username, accion=f"Eliminó usuario {username}")
+            return JsonResponse({"ok": True})
+        except Exception as e:
+            print(f"Error en eliminar_usuario: {e}")
+            return JsonResponse({"ok": False, "error": str(e)})
     return JsonResponse({"ok": False})
 
-# -------------------- ROLES --------------------
-@require_POST
-def config_roles(request):
-    roles = Usuario.objects.values("rol").distinct()
-    lista = []
-    for r in roles:
-        lista.append({"rol": r["rol"]})
-    return JsonResponse(lista, safe=False)
 
-# -------------------- AUDITORÍA --------------------
-@require_POST
+@login_required
 def config_auditoria(request):
-    logs = Auditoria.objects.all().order_by("-fecha").values("usuario", "accion", "fecha")
-    return JsonResponse(list(logs), safe=False)
-
-# -------------------- SESIONES --------------------
-@require_POST
-def config_sesiones(request):
-    sesiones = SesionActiva.objects.all().values("id", "usuario", "ip", "ultima_vez")
-    return JsonResponse(list(sesiones), safe=False)
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Acceso denegado'}, status=403)
+    try:
+        # Si no hay logs, crear uno de prueba
+        if Auditoria.objects.count() == 0:
+            Auditoria.objects.create(
+                usuario=request.user.username,
+                accion="Accedió a la configuración de auditoría",
+                fecha=timezone.now()
+            )
+        
+        logs = Auditoria.objects.all().order_by("-fecha").values("usuario", "accion", "fecha")
+        return JsonResponse(list(logs), safe=False)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

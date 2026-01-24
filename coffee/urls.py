@@ -1,4 +1,5 @@
 from . import views
+from . import views_traditional
 from django.urls import path, include
 
 urlpatterns = [
@@ -12,6 +13,12 @@ urlpatterns = [
     path('productos/crear/', views.crear_producto, name='crear_producto'),
     path('productos/editar/<int:id>/', views.editar_producto, name='editar_producto'),
     path('productos/eliminar/<int:id>/', views.eliminar_producto, name='eliminar_producto'),
+    
+    # Vistas tradicionales con mensajes (para formularios POST tradicionales)
+    path('productos/traditional/crear/', views_traditional.crear_producto_tradicional, name='crear_producto_tradicional'),
+    path('productos/traditional/editar/<int:id>/', views_traditional.editar_producto_tradicional, name='editar_producto_tradicional'),
+    path('productos/traditional/eliminar/<int:id>/', views_traditional.eliminar_producto_tradicional, name='eliminar_producto_tradicional'),
+    
     path('ventas/', views.ventas, name='ventas'),
     path('ventas/crear/', views.crear_venta, name='crear_venta'),
     path('ventas/listar/', views.listar_ventas_json, name='listar_ventas'),
@@ -24,8 +31,13 @@ urlpatterns = [
     path('proveedores/editar/<int:id>/', views.editar_proveedor, name='editar_proveedor'),
     path('proveedores/eliminar/<int:id>/', views.eliminar_proveedor, name='eliminar_proveedor'),
     
-    # Reportes ahora en su propia app
-    path('reportes/', include('reportes.urls')),
+    # Vistas tradicionales de proveedores con mensajes
+    path('proveedores/traditional/crear/', views_traditional.crear_proveedor_tradicional, name='crear_proveedor_tradicional'),
+    path('proveedores/traditional/editar/<int:id>/', views_traditional.editar_proveedor_tradicional, name='editar_proveedor_tradicional'),
+    path('proveedores/traditional/eliminar/<int:id>/', views_traditional.eliminar_proveedor_tradicional, name='eliminar_proveedor_tradicional'),
+    
+    # Reportes ahora en su propia app (incluir con namespace para poder usar reportes:dashboard)
+    path('reportes/', include(('reportes.urls', 'reportes'), namespace='reportes')),
     
     # Configuración
     path("config/", views.configuracion_page, name="configuracion"),
@@ -36,7 +48,5 @@ urlpatterns = [
     path("config/usuarios/editar/<int:id>/", views.editar_usuario, name="editar_usuario"),
     path("config/usuarios/eliminar/<int:id>/", views.eliminar_usuario, name="eliminar_usuario"),
 
-    path("config/roles/", views.config_roles, name="config_roles"),
     path("config/auditoria/", views.config_auditoria, name="config_auditoria"),
-    path("config/sesiones/", views.config_sesiones, name="config_sesiones"),
 ]

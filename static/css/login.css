@@ -19,27 +19,33 @@ body {
 /* ======= LADO IZQUIERDO (imagen/logotipo) ======= */
 .left {
     width: 45%;
-    background-image: url("photo1.jpg"); /* Aquí puedes poner la imagen */
-    background-size: cover;
-    background-position: center;
+    background-image: url("../images/granos-cafe-tostados-caen-aromaticos-ricos (1).png");
+    background-size: 100% 100%;
+    background-position: left center;
+    background-repeat: no-repeat;
     position: relative;
 }
 
 .left .logo-text {
     position: absolute;
-    top: 45%;
-    left: 20%;
-    transform: translateY(-50%);
-    font-size: 65px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
     text-align: center;
     font-family: "Georgia", serif;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     color: white;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 1), 2px 2px 4px rgba(44, 24, 16, 0.8);
+    font-weight: bold;
+    z-index: 10;
 }
 
 .left .sub {
-    font-size: 22px;
-    letter-spacing: 3px;
+    font-size: 18px;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 10px;
 }
 
 /* ======= PANEL DERECHO ======= */
@@ -85,8 +91,8 @@ body {
     font-family: "Georgia", serif;
 }
 
-/* ======= INPUT PASSWORD ======= */
-input[type="password"] {
+/* ======= INPUTS (usuario y contraseña) ======= */
+input[type="text"], input[type="password"] {
     width: 95%;
     padding: 15px;
     margin: 10px 0 20px 0;
@@ -123,5 +129,92 @@ p{
 
 .selectedRole {
     border: 4px solid #865443;
+}
+
+
+/* ======= RESPONSIVE: pantallas pequeñas ======= */
+@media (max-width: 900px) {
+    body {
+        display: block; /* permitir que el contenedor no ocupe 100vh rígido */
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .left {
+        width: 100%;
+        height: 30vh;
+        min-height: 160px;
+        background-position: left center;
+        background-size: 100% 100%;
+    }
+
+    .left .logo-text {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        font-size: 28px;
+        padding: 18px 10px;
+        text-align: center;
+        line-height: 1.1;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 1), 2px 2px 4px rgba(44, 24, 16, 0.8);
+        z-index: 10;
+    }
+
+    .left .sub {
+        font-size: 16px;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .right {
+        width: 100%;
+        padding: 24px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .panel {
+        width: 92%;
+        padding: 22px;
+        border-radius: 12px;
+    }
+
+    .panel h1 {
+        font-size: 26px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    input[type="text"], input[type="password"] {
+        width: 100%;
+    }
+}
+
+@media (max-width: 420px) {
+    .left {
+        height: 24vh;
+        min-height: 120px;
+    }
+
+    .left .logo-text {
+        font-size: 22px;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 1), 2px 2px 4px rgba(44, 24, 16, 0.8);
+    }
+
+    .left .sub {
+        font-size: 14px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
 }
 

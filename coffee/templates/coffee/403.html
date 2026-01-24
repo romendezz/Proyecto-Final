@@ -1,0 +1,48 @@
+{% extends 'coffee/base.html' %}
+
+{% block title %}Acceso Denegado - Rojas Café{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-shield-exclamation"></i>
+                        Acceso Denegado
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-lock-fill text-danger" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h5 class="text-center text-danger mb-3">No tienes permisos para acceder a esta página</h5>
+                    
+                    <p class="text-center text-muted">
+                        Lo sentimos, pero esta sección está restringida solo para administradores.
+                    </p>
+                    
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Información:</strong> Los reportes y funciones administrativas están disponibles 
+                        únicamente para usuarios con permisos de administrador (staff).
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'inicio' %}" class="btn btn-primary">
+                            <i class="bi bi-house"></i>
+                            Ir al Inicio
+                        </a>
+                        <a href="javascript:history.back()" class="btn btn-secondary ms-2">
+                            <i class="bi bi-arrow-left"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

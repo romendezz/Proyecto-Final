@@ -18,13 +18,7 @@
             <a class="nav-link active" data-tab="usuarios" href="#">Usuarios</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-tab="roles" href="#">Roles</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" data-tab="auditoria" href="#">Auditoría</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-tab="sesiones" href="#">Sesiones</a>
         </li>
     </ul>
 
@@ -47,12 +41,16 @@
         <form id="formUsuario">
           <input type="hidden" id="usuarioId">
           <div class="mb-3">
-            <label>Nombre</label>
+            <label>Usuario</label>
             <input type="text" id="usuarioNombre" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label>Correo</label>
-            <input type="email" id="usuarioCorreo" class="form-control" required>
+            <label>Nombre</label>
+            <input type="text" id="usuarioFirstName" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>Contraseña</label>
+            <input type="password" id="usuarioPassword" class="form-control" placeholder="Dejar en blanco para no cambiar">
           </div>
           <div class="mb-3">
             <label>Rol</label>
@@ -98,47 +96,9 @@
   <div class="toast-body"></div>
 </div>
 
-<script>
-  // Datos de prueba para renderizar
-  usuariosActuales = [
-    {id:1, nombre:"Juan", correo:"juan@test.com", rol:"Admin"},
-    {id:2, nombre:"Ana", correo:"ana@test.com", rol:"Vendedor"}
-  ];
-  renderizarTablaUsuarios();
-</script>
-
 {% endblock %}
 
 {% block extra_js %}
-<script>
-  // Determinar qué sección cargar basado en el hash de la URL
-  function getSeccionFromHash() {
-    const hash = window.location.hash.substring(1);
-    return hash || 'usuarios';
-  }
-  
-  document.addEventListener('DOMContentLoaded', function() {
-    const seccion = getSeccionFromHash();
-    
-    // Activar el tab correspondiente
-    document.querySelectorAll("#tabsConfig .nav-link").forEach(tab => {
-      tab.classList.remove("active");
-      if (tab.dataset.tab === seccion) {
-        tab.classList.add("active");
-      }
-    });
-    
-    // Cargar la sección correspondiente
-    if (seccion === 'roles') {
-      cargarRoles();
-    } else if (seccion === 'auditoria') {
-      cargarAuditoria();
-    } else if (seccion === 'sesiones') {
-      cargarSesiones();
-    } else {
-      cargarUsuarios();
-    }
-  });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/configuracion.js' %}"></script>
 {% endblock %}

@@ -208,7 +208,11 @@ function limpiarCarrito() {
 }
 
 function confirmarVenta() {
+  console.log('=== CONFIRMAR VENTA ===');
+  console.log('Productos en venta:', productosVenta);
+  
   if (productosVenta.length === 0) {
+    console.log('Error: No hay productos');
     mostrarToast('Agregue productos antes de confirmar', 'warning');
     return;
   }
@@ -216,6 +220,8 @@ function confirmarVenta() {
   // Validar que las cantidades sean válidas
   let todasValidadas = true;
   for (let p of productosVenta) {
+    console.log(`Validando producto: ${p.nombre}, cantidad: ${p.cantidad}, stock: ${p.stock}`);
+    
     if (p.cantidad <= 0) {
       mostrarToast(`Cantidad inválida para ${p.nombre}`, 'danger');
       todasValidadas = false;
@@ -231,6 +237,7 @@ function confirmarVenta() {
   if (!todasValidadas) return;
 
   if (!confirm('¿Confirmar venta? Esta acción no se puede deshacer.')) {
+    console.log('Usuario canceló la venta');
     return;
   }
 
@@ -242,16 +249,22 @@ function confirmarVenta() {
     })),
   };
 
+  console.log('Datos a enviar:', datos);
+  console.log('URL: /ventas/crear/');
+
   fetch('/ventas/crear/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken')
     },
     body: JSON.stringify(datos),
   })
-    .then((res) => res.json())
+    .then((res) => {
+      console.log('Respuesta status:', res.status);
+      return res.json();
+    })
     .then((datos) => {
+      console.log('Respuesta del servidor:', datos);
       if (datos.ok) {
         mostrarToast(`Venta registrada exitosamente (ID: ${datos.venta_id})`, 'success');
         productosVenta = [];
@@ -262,6 +275,7 @@ function confirmarVenta() {
           cargarVentas();
         }
       } else {
+        console.log('Error en respuesta:', datos);
         mostrarToast(datos.error || 'Error al registrar venta', 'danger');
       }
     })

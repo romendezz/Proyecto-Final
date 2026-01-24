@@ -1,57 +1,315 @@
-/* Fade-in */
-.fade-in { animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
+/* ======= CONFIGURACIÓN - ESTILO CAFÉ ======= */
 
-/* Tarjetas estilo café */
-.card-config {
+body {
+  background: #f6efe6; /* Beige café claro */
+  font-family: "Georgia", Arial, sans-serif;
+  color: #4b2e18;
+}
+
+h2 {
+  color: #4b2e18; /* Café casi negro */
+  font-family: "Georgia", Arial, sans-serif;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* ======= CONTENEDOR PRINCIPAL ======= */
+.container-fluid {
+  padding: 20px;
+}
+
+/* ======= TARJETAS ======= */
+.card-custom {
   background: #fff8ee;
   border-left: 4px solid #c79b63;
   border-radius: 10px;
-  padding: 18px;
+  padding: 20px;
   margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card-custom h5 {
+  color: #4b2e18;
+  font-weight: 700;
+  font-family: "Georgia", Arial, sans-serif;
+  margin-bottom: 15px;
+}
+
+/* ======= TABS ======= */
+.nav-tabs {
+  border-bottom: 2px solid #c79b63;
+}
+
+.nav-tabs .nav-link {
+  color: #4b2e18;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-weight: 500;
+  font-family: "Georgia", Arial, sans-serif;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #a67b5b;
+  border-bottom-color: #a67b5b;
+}
+
+.nav-tabs .nav-link.active {
+  color: #4b2e18;
+  background: none;
+  border-bottom: 2px solid #c79b63;
+  font-weight: 700;
+}
+
+/* ======= TABLAS ======= */
+.table {
+  background: #fff8ee;
+  border-radius: 8px;
+  overflow: hidden;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.card-config h4 { color: #4b2e18; font-weight: 600; }
-
-/* Tabs activos */
-.nav-tabs .nav-link.active {
-  background: #c79b63 !important;
-  color: white !important;
-  font-weight: bold;
+.table thead {
+  background: #c79b63;
+  color: white;
 }
 
-/* Botones y badges */
-.btn-config { border-radius: 6px; padding: 6px 12px; }
-.badge { font-size: 0.85rem; }
-
-/* MODALES */
-.modal-content {
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.table thead th {
+  font-family: "Georgia", Arial, sans-serif;
+  font-weight: 600;
+  border: none;
+  padding: 12px 15px;
 }
 
-/* TOASTS */
-#toastConfig {
-  min-width: 220px;
-  max-width: 300px;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f0e6dc;
+}
+
+.table tbody td {
+  padding: 12px 15px;
+  border-top: 1px solid #e8d4c4;
+  vertical-align: middle;
+}
+
+/* ======= BOTONES ======= */
+.btn {
+  border-radius: 6px;
+  padding: 8px 16px;
   font-weight: 500;
+  font-family: "Georgia", Arial, sans-serif;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-primary {
+  background: #c79b63;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #a67b5b;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.btn-warning {
+  background: #ffc107;
+  color: #212529;
+}
+
+.btn-warning:hover {
+  background: #e0a800;
+  color: #212529;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 0.875rem;
+}
+
+/* ======= BADGES ======= */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+/* ======= MODALES ======= */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  background: #fff8ee;
+}
+
+.modal-header {
+  background: #c79b63;
+  color: white;
+  border-radius: 12px 12px 0 0;
+  border: none;
+}
+
+.modal-title {
+  font-family: "Georgia", Arial, sans-serif;
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-footer {
+  border-top: 1px solid #e8d4c4;
+  padding: 15px 25px;
+}
+
+/* ======= FORMULARIOS ======= */
+.form-control {
+  border: 1px solid #e8d4c4;
+  border-radius: 6px;
+  padding: 10px 15px;
+  background: #fff;
+  color: #4b2e18;
+  font-family: "Georgia", Arial, sans-serif;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #c79b63;
+  box-shadow: 0 0 0 0.2rem rgba(199, 155, 99, 0.25);
+  outline: none;
+}
+
+.form-label {
+  color: #4b2e18;
+  font-weight: 600;
+  font-family: "Georgia", Arial, sans-serif;
+  margin-bottom: 8px;
+}
+
+.form-select {
+  border: 1px solid #e8d4c4;
+  border-radius: 6px;
+  padding: 10px 15px;
+  background: #fff;
+  color: #4b2e18;
+  font-family: "Georgia", Arial, sans-serif;
+}
+
+.form-select:focus {
+  border-color: #c79b63;
+  box-shadow: 0 0 0 0.2rem rgba(199, 155, 99, 0.25);
+  outline: none;
+}
+
+/* ======= TOASTS ======= */
+#toastConfig {
+  min-width: 250px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-weight: 500;
+  font-family: "Georgia", Arial, sans-serif;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 1055;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  border: none;
 }
 
 .toast-body {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
   font-size: 0.9rem;
 }
 
-/* Iconos por tipo */
-.toast.bg-success .toast-body { color: #fff; background-color: #28a745; }
-.toast.bg-danger .toast-body { color: #fff; background-color: #dc3545; }
-.toast.bg-warning .toast-body { color: #212529; background-color: #ffc107; }
-.toast.bg-info .toast-body { color: #fff; background-color: #17a2b8; }
+/* ======= ANIMACIONES ======= */
+.fade-in {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ======= RESPONSIVE ======= */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 10px;
+  }
+  
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .modal-content {
+    margin: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .card-custom {
+    padding: 15px;
+  }
+  
+  .table th,
+  .table td {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}

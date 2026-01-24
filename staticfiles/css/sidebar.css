@@ -16,33 +16,6 @@
   transition: transform 0.3s ease;
 }
 
-.main-content {
-  margin-left: 250px;
-  padding: 20px;
-  min-height: 100vh;
-  background: #f5f5f5;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .barra-lateral {
-    transform: translateX(-100%);
-  }
-  
-  .barra-lateral.show {
-    transform: translateX(0);
-  }
-  
-  .main-content {
-    margin-left: 0;
-    padding: 10px;
-  }
-  
-  .hamburger-btn {
-    display: block !important;
-  }
-}
-
 .sidebar::-webkit-scrollbar {
   width: 8px;
 }
@@ -76,28 +49,31 @@
 .barra-lateral a {
   display: flex;
   align-items: center;
-  padding: 12px 15px;
-  color: #ffffff;
+  gap: 10px;
+  color: #ffffff; /* Blanco puro para mejor accesibilidad visual */
   text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  border-left: 3px solid transparent;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 8px;
   transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
 }
 
 .sidebar a:hover,
 .barra-lateral a:hover {
-  background: rgba(255, 248, 238, 0.15);
+  background: rgba(255, 255, 255, 0.15); /* Fondo blanco con transparencia */
   transform: translateX(5px);
-  border-left-color: #d4a574;
-  color: #fff8ee;
+  border-left-color: #ffffff; /* Borde izquierdo blanco */
+  color: #ffffff; /* Texto blanco */
 }
 
 .sidebar a.activo,
 .barra-lateral a.activo {
-  background: rgba(255, 248, 238, 0.25);
-  border-left-color: #d4a574;
-  color: #fff8ee;
+  background: rgba(255, 255, 255, 0.25); /* Fondo blanco más opaco */
+  border-left-color: #ffffff; /* Borde izquierdo blanco */
+  color: #ffffff; /* Texto blanco */
   font-weight: 600;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -106,7 +82,6 @@
 .barra-lateral a i {
   font-size: 18px;
   transition: transform 0.3s ease;
-  margin-right: 12px;
 }
 
 .sidebar a:hover i,
@@ -146,39 +121,36 @@
 }
 
 .submenu a {
-  padding: 12px 15px 12px 45px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #ffffff;
+  padding: 10px 15px 10px 45px;
+  font-size: 0.9rem;
+  color: #d4a574;
   border-left: none;
   margin: 4px 0;
-  transition: all 0.3s ease;
 }
 
 .submenu a:hover {
-  background-color: rgba(255, 248, 238, 0.2);
+  background-color: rgba(255, 248, 238, 0.1);
   padding-left: 50px;
   color: #fff8ee;
 }
 
 .submenu a i {
   font-size: 16px;
-  margin-right: 12px;
+  margin-right: 8px;
 }
 
 /* Logout button special styling */
 .menu-logout {
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   margin-top: auto;
   padding-top: 15px;
-  color: #ffffff;
-  font-weight: 600;
+  color: #ffffff; /* Blanco para mejor accesibilidad visual */
 }
 
 .menu-logout:hover {
-  background-color: rgba(212, 165, 116, 0.25);
-  border-left-color: #d4a574;
-  color: #fff8ee;
+  background-color: rgba(255, 255, 255, 0.15); /* Fondo blanco con transparencia */
+  border-left-color: #ffffff; /* Borde izquierdo blanco */
+  color: #ffffff; /* Texto blanco */
 }
 
 .sidebar hr {
@@ -194,72 +166,86 @@
   margin-left: 250px;
   padding: 30px;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #f6efe6; /* Beige café claro - igual que productos.css */
   transition: margin-left 0.3s ease;
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
-  .sidebar {
+/* Tablets (768px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar,
+  .barra-lateral {
     width: 220px;
   }
 
   .main-content {
     margin-left: 220px;
-    padding: 20px;
+    padding: 25px;
+    background: #f6efe6; /* Beige café claro - consistente */
   }
 
-  .sidebar a {
-    padding: 10px 12px;
-    font-size: 13px;
+  .sidebar h4,
+  .barra-lateral h4 {
+    font-size: 1.2rem;
   }
 
-  .sidebar h4 {
-    font-size: 1.1rem;
+  .sidebar a,
+  .barra-lateral a {
+    padding: 11px 14px;
+    font-size: 14px;
   }
 }
 
-@media (max-width: 576px) {
-  .sidebar {
-    width: 100%;
-    height: 60px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: auto;
+/* Tablets pequeñas y móviles grandes */
+@media (max-width: 768px) {
+  .sidebar,
+  .barra-lateral {
     transform: translateX(-100%);
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
   }
 
-  .sidebar.show {
+  .sidebar.show,
+  .barra-lateral.show {
     transform: translateX(0);
-  }
-
-  .sidebar h4 {
-    display: none;
-  }
-
-  .sidebar hr {
-    display: none;
-  }
-
-  .sidebar a {
-    margin: 0 5px;
-    padding: 8px 10px;
-    font-size: 12px;
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .main-content {
     margin-left: 0;
-    margin-top: 70px;
+    padding: 20px;
+    background: #f6efe6; /* Beige café claro - consistente */
+  }
+
+  .hamburger-btn {
+    display: block !important;
+  }
+
+  .sidebar a,
+  .barra-lateral a {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .sidebar h4,
+  .barra-lateral h4 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Móviles */
+@media (max-width: 576px) {
+  .sidebar,
+  .barra-lateral {
+    width: 250px; /* Mantener ancho normal cuando se muestra */
+  }
+
+  .main-content {
     padding: 15px;
+    background: #f6efe6; /* Beige café claro - consistente */
+  }
+
+  .sidebar a,
+  .barra-lateral a {
+    padding: 8px 10px;
+    font-size: 12px;
   }
 }
 
@@ -272,8 +258,31 @@
   display: none;
 }
 
-@media (max-width: 576px) {
-  .hamburger-btn.d-none {
+.hamburger-btn i {
+    background-color: #4b2e18;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.hamburger-btn i:hover {
+    background-color: #6b4423;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.hamburger-btn i:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .hamburger-btn {
     display: block !important;
   }
 }

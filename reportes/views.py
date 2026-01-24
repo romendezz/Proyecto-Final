@@ -11,6 +11,8 @@ from .services import ReporteService
 
 @login_required
 def reportes_dashboard(request):
+    if not request.user.is_staff:
+        return render(request, 'coffee/403.html', status=403)
     tipo = request.GET.get('tipo', 'ventas')
     context = {'tipo_reporte': tipo}
     return render(request, 'reportes/reportes.html', context)
@@ -18,39 +20,53 @@ def reportes_dashboard(request):
 @login_required
 def reporte_ventas(request):
     """Reporte de ventas"""
+    if not request.user.is_staff:
+        return render(request, 'coffee/403.html', status=403)
     return render(request, 'reportes/ventas.html')
 
 @login_required
 def reporte_inventario(request):
     """Reporte de inventario"""
+    if not request.user.is_staff:
+        return render(request, 'coffee/403.html', status=403)
     return render(request, 'reportes/inventario.html')
 
 @login_required
 def reporte_ganancias(request):
     """Reporte de ganancias"""
+    if not request.user.is_staff:
+        return render(request, 'coffee/403.html', status=403)
     return render(request, 'reportes/ganancias.html')
 
 @require_POST
 def api_estadisticas_ventas(request):
     """API para estadísticas de ventas"""
+    if not request.user.is_staff:
+        return render(request, 'coffee/403.html', status=403)
     datos = ReporteService.get_estadisticas_ventas()
     return JsonResponse(datos)
 
 @require_POST
 def api_inventario(request):
     """API para datos de inventario"""
+    if not request.user.is_staff:
+        return JsonResponse({'ok': False, 'error': 'Acceso denegado'}, status=403)
     datos = ReporteService.get_datos_inventario()
     return JsonResponse(datos)
 
 @require_POST
 def api_ganancias(request):
     """API para reporte de ganancias"""
+    if not request.user.is_staff:
+        return JsonResponse({'ok': False, 'error': 'Acceso denegado'}, status=403)
     datos = ReporteService.get_ganancias()
     return JsonResponse(datos)
 
 @require_POST
 def api_ventas_detalladas(request):
     """API para ventas detalladas con filtros"""
+    if not request.user.is_staff:
+        return JsonResponse({'ok': False, 'error': 'Acceso denegado'}, status=403)
     try:
         data = json.loads(request.body)
         periodo = data.get('periodo', 'mes')

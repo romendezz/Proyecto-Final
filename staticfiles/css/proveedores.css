@@ -5,6 +5,25 @@ body {
   font-family: "Georgia", Arial, sans-serif;
 }
 
+/* Table container para evitar cuadrado marrón */
+.table-container {
+  background: #f6efe6; /* Beige café claro - igual que body */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Card custom para evitar cuadrado marrón */
+.card-custom {
+  background: #f6efe6; /* Beige café claro - igual que body */
+  border: 1px solid rgba(75, 46, 24, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.buscar-filtrar {
+  background: #f6efe6; /* Beige café claro - igual que body */
+}
+
 h2{
   color: #4b2e18; /* Café casi negro */
   font-family: "Georgia", Arial, sans-serif;
@@ -36,6 +55,10 @@ h2{
   color: #fff8ee;
   border-color: #a67b5b;
   border-right: 0;
+}
+
+.input-group-text i {
+  font-size: 0.9rem;
 }
 
 #busqueda {
@@ -155,7 +178,7 @@ h2{
 .btn-danger {
   background: #a52a2a;
   border: none;
-  color: #a67b5b;
+  color: #ffffff !important;
 }
 
 .btn-danger:hover {
@@ -183,18 +206,33 @@ h2{
 
 .form-control,
 .form-select {
-  background: #a67b5b;
+  background: #fff8ee;
   border: 1px solid #deb887;
-  color: #ffffff;
+  color: #4b2e18;
 }
 
 .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(75, 46, 24, 0.5);
 }
 
 .form-control:focus,
 .form-select:focus {
-  color: #ffffff;
+  background: #fff8ee;
+  color: #4b2e18;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+  color: #4b2e18;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.modal-body .form-label {
+  color: #fff8ee;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 ::-webkit-scrollbar {

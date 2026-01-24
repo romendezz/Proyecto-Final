@@ -5,6 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Rojas Café - Sistema de Gestión{% endblock %}</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
 
     <!-- BOOTSTRAP CSS + ICONS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,14 +19,24 @@
     <!-- CSS COMÚN -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}" />
     <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/reportes.css' %}" />
 
     <!-- CSS ESPECÍFICO -->
     {% block extra_css %}{% endblock %}
   </head>
 
-  <body class="bg-light">
-    {% csrf_token %}
+  <body class="bg-light" data-user-staff="{% if user.is_staff %}true{% else %}false{% endif %}">
+
+    <!-- MESSAGES -->
+    {% if messages %}
+    <div class="container-fluid mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
 
     <!-- BARRA LATERAL -->
     <div class="barra-lateral">
@@ -31,18 +44,18 @@
 
       <!-- INICIO -->
       <a href="{% url 'inicio' %}" class="{% if request.resolver_match.url_name == 'inicio' %}activo{% endif %}">
-        <i class="bi bi-speedometer2"></i><span>  Inicio</span>
+        <i class="bi bi-speedometer2"></i><span>Inicio</span>
       </a>
 
       <!-- PRODUCTOS -->
-      <a href="{% url 'productos' %}" class="{% if request.resolver_match.url_name == 'productos' %}activo{% endif %}">
-        <i class="bi bi-box-seam"></i><span>  Productos</span>
+      <a href="{% url 'productos' %}" class="menu-principal {% if request.resolver_match.url_name == 'productos' %}activo{% endif %}">
+        <i class="bi bi-box-seam"></i><span>Productos</span>
       </a>
 
       <!-- VENTAS -->
       <div class="menu-group">
         <a href="{% url 'ventas' %}" class="menu-principal {% if request.resolver_match.url_name == 'ventas' %}activo{% endif %}">
-          <i class="bi bi-cart-check"></i><span>  Ventas</span><i class="bi bi-chevron-right ms-auto"></i>
+          <i class="bi bi-cart-check"></i><span>Ventas</span><i class="bi bi-chevron-right ms-auto"></i>
         </a>
         <div class="submenu">
           <a href="{% url 'ventas' %}"><i class="bi bi-receipt"></i> Registro de Ventas</a>
@@ -51,53 +64,48 @@
         </div>
       </div>
 
+      {% if user.is_staff %}
       <!-- REPORTES -->
       <div class="menu-group">
         <a href="{% url 'reportes:dashboard' %}" class="menu-principal {% if request.resolver_match.namespace == 'reportes' %}activo{% endif %}">
-          <i class="bi bi-graph-up"></i><span>  Reportes</span><i class="bi bi-chevron-right ms-auto"></i>
+          <i class="bi bi-graph-up"></i><span>Reportes</span><i class="bi bi-chevron-right ms-auto"></i>
         </a>
         <div class="submenu">
-          <a href="{% url 'reportes:dashboard' %}?tipo=ventas"><i class="bi bi-cart-check"></i> Ventas</a>
+          <a href="{% url 'reportes:dashboard' %}?tipo=ventas"><i class="bi bi-bar-chart"></i> Ventas</a>
           <a href="{% url 'reportes:dashboard' %}?tipo=inventario"><i class="bi bi-boxes"></i> Inventario</a>
           <a href="{% url 'reportes:dashboard' %}?tipo=ganancias"><i class="bi bi-cash-coin"></i> Ganancias</a>
         </div>
       </div>
+      {% endif %}
 
       {% if user.is_staff %}
       <!-- PROVEEDORES -->
-      <a href="{% url 'proveedores' %}" class="{% if request.resolver_match.url_name == 'proveedores' %}activo{% endif %}">
-        <i class="bi bi-truck"></i><span>  Proveedores</span>
+      <a href="{% url 'proveedores' %}" class="menu-principal {% if request.resolver_match.url_name == 'proveedores' %}activo{% endif %}">
+        <i class="bi bi-truck"></i><span>Proveedores</span>
       </a>
-
-      <hr style="border-color: rgba(255, 255, 255, 0.2)" />
-
-      <!-- ADMIN / CONFIGURACIÓN -->
-      <div class="menu-group">
-        <a href="{% url 'configuracion' %}" class="menu-principal {% if request.resolver_match.url_name == 'configuracion' %}activo{% endif %}">
-          <i class="bi bi-gear"></i><span>  Configuración</span><i class="bi bi-chevron-right ms-auto"></i>
-        </a>
-        <div class="submenu">
-          <a href="{% url 'configuracion' %}#usuarios"><i class="bi bi-people"></i> Usuarios</a>
-          <a href="{% url 'configuracion' %}#roles"><i class="bi bi-shield-check"></i> Roles</a>
-          <a href="{% url 'configuracion' %}#auditoria"><i class="bi bi-clipboard-data"></i> Auditoría</a>
-          <a href="{% url 'configuracion' %}#sesiones"><i class="bi bi-clock-history"></i> Sesiones</a>
-        </div>
-      </div>
-      
     {% endif %}
 
       <hr style="border-color: rgba(255, 255, 255, 0.2)" />
 
+      {% if user.is_staff %}
+      <!-- CONFIGURACIÓN -->
+      <a href="/config/" class="menu-principal {% if request.resolver_match.url_name == 'configuracion' %}activo{% endif %}">
+        <i class="bi bi-gear"></i><span>Configuración</span>
+      </a>
+
+      <hr style="border-color: rgba(255, 255, 255, 0.2)" />
+      {% endif %}
+
       <!-- CERRAR SESIÓN -->
       <a href="{% url 'logout' %}" class="menu-logout">
-        <i class="bi bi-box-arrow-left"></i><span> Cerrar Sesión</span>
+        <i class="bi bi-box-arrow-left"></i><span>Cerrar Sesión</span>
       </a>
     </div>
 
     <!-- CONTENIDO PRINCIPAL -->
     <div class="main-content">
-      <button class="btn btn-outline-secondary hamburger-btn d-none mb-3" onclick="toggleSidebar()">
-        <i class="bi bi-list"></i>
+      <button class="hamburger-btn mb-3" onclick="toggleSidebar()">
+        <i class="bi bi-list hamburger-button"></i>
       </button>
       {% block content %}{% endblock %}
     </div>
@@ -178,7 +186,6 @@
 
     <!-- SCRIPTS COMUNES -->
     <script src="{% static 'js/sidebar.js' %}"></script>
-    <script src="{% static 'js/reportes.js' %}"></script>
 
     <!-- SCRIPTS PERSONALIZADOS -->
     <script>

@@ -44,6 +44,10 @@ h2{
   border-right: 0;
 }
 
+.input-group-text i {
+  font-size: 0.9rem;
+}
+
 #busqueda {
   background: #a67b5b;
   color: #fff8ee;
@@ -203,4 +207,67 @@ h2{
 ::-webkit-scrollbar-thumb {
   background: #b7885a;
   border-radius: 4px;
+}
+
+/* RESPONSIVE */
+/* Tablets (768px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .table-responsive {
+    font-size: 14px;
+  }
+  
+  .btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .card-custom {
+    padding: 20px;
+  }
+}
+
+/* Tablets pequeñas y móviles grandes */
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 13px;
+  }
+  
+  .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .card-custom {
+    padding: 15px;
+  }
+  
+  .row {
+    margin: 0;
+  }
+  
+  .col-md-4, .col-md-3, .col-md-2 {
+    margin-bottom: 10px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 576px) {
+  .table-responsive {
+    font-size: 12px;
+  }
+  
+  .btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  
+  .card-custom {
+    padding: 10px;
+  }
+  
+  .table th,
+  .table td {
+    padding: 5px;
+    font-size: 11px;
+  }
 }

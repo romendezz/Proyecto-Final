@@ -7,12 +7,12 @@
 
     <tbody>
     {% for p in productos %}
-        <tr data-id="{{ p.id }}" {% if p.stock == 0 %}class="table-danger"{% endif %}>
+        <tr data-id="{{ p.id }}" data-proveedor-id="{{ p.proveedor.id|default:'' }}" data-proveedor-nombre="{{ p.proveedor.nombre|default:'' }}" {% if p.stock == 0 %}class="table-danger"{% endif %}>
             <td>{{ p.id }}</td>
             <td class="td-nombre">{{ p.nombre }}</td>
             <td class="td-precio">{{ p.precio }}</td>
             <td class="td-stock">{{ p.stock }}</td>
-            <td class="td-proveedor">{{ p.proveedor }}</td>{% if user.is_staff %}
+            <td class="td-proveedor">{{ p.proveedor.nombre|default:'Sin proveedor' }}</td>{% if user.is_staff %}
             <td>
                 <button class="btn btn-warning btn-sm btnEditar" data-id="{{ p.id }}"><i class="bi bi-pencil"></i></button>
                 <button class="btn btn-danger btn-sm btnEliminar" data-id="{{ p.id }}"><i class="bi bi-trash"></i></button>

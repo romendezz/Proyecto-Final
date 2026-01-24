@@ -1,7 +1,7 @@
 {% extends 'coffee/base.html' %}
 {% load static %}
 
-{% block title %}Productos - The Rojas Coffee{% endblock %}
+{% block title %}Productos - Rojas Café{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/productos.css' %}">
@@ -76,8 +76,33 @@
   </div>
 </div>
 
+<!-- TOASTS -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="toastSuccess" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-success text-white">
+      <strong class="me-auto">Éxito</strong>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="toastSuccessMsg">
+      Mensaje de éxito
+    </div>
+  </div>
+
+  <div id="toastError" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-danger text-white">
+      <strong class="me-auto">Error</strong>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="toastErrorMsg">
+      Mensaje de error
+    </div>
+  </div>
+</div>
+
 <!-- MODALES (agregar / editar / eliminar) -->
+{% if user.is_staff %}
 {% include 'coffee/modales_productos.html' %}
+{% endif %}
 
 {% endblock %}
 
