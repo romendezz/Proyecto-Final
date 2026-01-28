@@ -27,3 +27,14 @@ Asegura que cada usuario tenga acceso únicamente a las funciones correspondient
 Proceso de ventas
 
 Las ventas se realizan de manera presencial en el mostrador de la cafetería. Aunque el sistema no procesa pagos electrónicos ni funciona como un punto de venta tradicional, registra automáticamente las salidas de inventario asociadas a cada venta, manteniendo un control actualizado en tiempo real mediante la arquitectura MVT de Django. Esto garantiza que la cafetería tenga siempre claridad sobre las existencias disponibles, los productos próximos a agotarse y las necesidades de reabastecimiento, contribuyendo a una operación más eficiente y sin complicaciones financieras externas.
+
+Login de usuarios:
+
+Para administrador: 
+Usuario: Superadmin
+Contraseña: admin123
+
+Para dependiente:
+Usuario: Hector
+Contraseña: h12345678
+
